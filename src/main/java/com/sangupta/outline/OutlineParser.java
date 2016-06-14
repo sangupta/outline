@@ -112,13 +112,13 @@ public class OutlineParser {
                 group = command.group();
             }
             
-            if(group != null) {
+            if(group != null && !group.trim().isEmpty()) {
                 // command has an associated group
                 metadata.commandGroups.put(group, command);
             }
             
             // read options from within the commandClass
-            Field[] fields = commandClass.getFields();
+            Field[] fields = commandClass.getDeclaredFields();
             if(fields.length == 0) {
                 // there are no fields in command
                 // let's move on

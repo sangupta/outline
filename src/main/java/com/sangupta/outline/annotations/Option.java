@@ -40,7 +40,7 @@ public @interface Option {
      * How many parameter values this option will consume. For example,
      * an arity of 2 will allow "-pair value1 value2".
      */
-    int arity() default Integer.MIN_VALUE;
+    int arity() default 1;
 
     /**
      * If true, this parameter won't appear in the usage().
