@@ -139,11 +139,15 @@ public class OutlineParser {
                 Map<String, Option> map;
                 switch(type) {
                     case COMMAND:
-                        map = new HashMap<>();
+                        map = metadata.commandOptions.get(commandName);
+                        if(map == null) {
+                            map = new HashMap<>();
+                            metadata.commandOptions.put(commandName, map);
+                        }
+                        
                         for(String name : option.name()) {
                             map.put(name, option);
                         }
-                        metadata.commandOptions.put(commandName, map);
                         break;
                     
                     case GLOBAL:
@@ -157,11 +161,15 @@ public class OutlineParser {
                             throw new RuntimeException("Group option from command is not a part of any group");
                         }
 
-                        map = new HashMap<>();
+                        map = metadata.groupOptions.get(group);
+                        if(map == null) {
+                            map = new HashMap<>();
+                            metadata.groupOptions.put(group, map);
+                        }
+                        
                         for(String name : option.name()) {
                             map.put(name, option);
                         }
-                        metadata.groupOptions.put(group, map);
                         break;
                     
                     default:
