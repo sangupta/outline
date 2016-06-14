@@ -75,7 +75,7 @@ public class ArgumentParser {
             
             // we found the option
             token = iterator.next();
-            parseOption(iterator, options.get(token), result.groupOptions);
+            parseOption(iterator, options.get(token), result.commandOptions);
         }
     }
 

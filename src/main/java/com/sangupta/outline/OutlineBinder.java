@@ -38,7 +38,7 @@ class OutlineBinder {
      * @param result
      */
     public static void bindInstanceToProperties(Class<?> clazz, Object instance, ParseResult result) {
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = clazz.getFields();
         bindAllOptions(fields, instance, result);
         
         int startOrder = bindAllArgumentsWithOrder(fields, instance, result);
