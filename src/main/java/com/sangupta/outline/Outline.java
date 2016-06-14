@@ -21,6 +21,10 @@ public class Outline extends OutlineBase {
     
     final Map<String, OutlineBase> groups = new HashMap<>();
     
+    public static <T> void registerTypeConverter(Class<T> classOfT, OutlineTypeConverter<T> converter) {
+        OutlineBinder.registerTypeConverter(classOfT, converter);
+    }
+    
     /**
      * 
      */

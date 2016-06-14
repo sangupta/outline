@@ -2,7 +2,9 @@ package com.sangupta.outline;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sangupta.jerry.ds.SimpleMultiMap;
 import com.sangupta.jerry.util.AssertUtils;
@@ -20,7 +22,13 @@ import com.sangupta.outline.parser.ParseResult;
  * @author sangupta
  *
  */
-public class OutlineBinder {
+class OutlineBinder {
+    
+    final static Map<Class<?>, OutlineTypeConverter<?>> converters = new HashMap<>();
+    
+    static <T> void registerTypeConverter(Class<T> classOfT, OutlineTypeConverter<T> converter) {
+        converters.put(classOfT, converter);
+    }
 
     /**
      * Bind the resultant properties that we have got to the object instance. So that
@@ -38,6 +46,15 @@ public class OutlineBinder {
         bindRemainingArguments(fields, instance, result, startOrder);
     }
 
+    /**
+     * Bind all the remaining arguments that havae not yet been set using <code>@Argument</code> annotation
+     * to any field that requires <code>@Arguments</code> annotation.
+     *  
+     * @param fields
+     * @param instance
+     * @param result
+     * @param startOrder
+     */
     private static void bindRemainingArguments(Field[] fields, Object instance, ParseResult result, int startOrder) {
         List<String> remaining;
         if(startOrder > 0) {
@@ -119,17 +136,28 @@ public class OutlineBinder {
         }
     }
 
-    private static void bindValueToField(Field field, Object instance, List<String> values) {
-        try {
-            ReflectionUtils.bindValue(field, instance, values);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+    private static void bindValueToField(Field field, Object instance, Object value) {
+        if(value instanceof List<?>) {
+            List<?> values = (List<?>) value;
+            
+            if(values.isEmpty()) {
+                ReflectionUtils.bindValueQuiet(field, instance, null);
+                return;
+            }
+            
+            if(values.size() == 1) {
+                bindValueToField(field, instance, values.get(0));
+                return;
+            }
         }
-    }
-
-    private static void bindValueToField(Field field, Object instance, String string) {
+        
+        Class<?> fieldClass = field.getType();
+        if(converters.containsKey(fieldClass)) {
+            value = converters.get(fieldClass).convertFrom(field, instance, value);
+        }
+        
         try {
-            ReflectionUtils.bindValue(field, instance, string);
+            ReflectionUtils.bindValue(field, instance, value);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }

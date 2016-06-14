@@ -118,7 +118,7 @@ public class OutlineParser {
             }
             
             // read options from within the commandClass
-            Field[] fields = commandClass.getDeclaredFields();
+            Field[] fields = commandClass.getFields();
             if(fields.length == 0) {
                 // there are no fields in command
                 // let's move on
