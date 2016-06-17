@@ -14,6 +14,7 @@ import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.util.OutlineUtil;
 
 /**
  * Bind functions that bind the command {@link Object} instance to the
@@ -38,7 +39,7 @@ class OutlineBinder {
      * @param result
      */
     public static void bindInstanceToProperties(Class<?> clazz, Object instance, ParseResult result) {
-        Field[] fields = clazz.getFields();
+        List<Field> fields = OutlineUtil.getAllFields(clazz);
         bindAllOptions(fields, instance, result);
         
         int startOrder = bindAllArgumentsWithOrder(fields, instance, result);
@@ -55,7 +56,7 @@ class OutlineBinder {
      * @param result
      * @param startOrder
      */
-    private static void bindRemainingArguments(Field[] fields, Object instance, ParseResult result, int startOrder) {
+    private static void bindRemainingArguments(List<Field> fields, Object instance, ParseResult result, int startOrder) {
         List<String> remaining;
         if(startOrder > 0) {
             remaining = result.arguments.subList(startOrder, result.arguments.size());
@@ -74,7 +75,7 @@ class OutlineBinder {
         }
     }
 
-    private static int bindAllArgumentsWithOrder(Field[] fields, Object instance, ParseResult result) {
+    private static int bindAllArgumentsWithOrder(List<Field> fields, Object instance, ParseResult result) {
         int maxOrderRead = -1;
         
         for(Field field : fields) {
@@ -100,7 +101,7 @@ class OutlineBinder {
         return maxOrderRead + 1;
     }
 
-    private static void bindAllOptions(Field[] fields, Object instance, ParseResult result) {
+    private static void bindAllOptions(List<Field> fields, Object instance, ParseResult result) {
         for(Field field : fields) {
             // check for @Option annotation
             Option option = field.getAnnotation(Option.class);

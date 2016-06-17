@@ -2,6 +2,7 @@ package com.sangupta.outline;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.parser.ArgumentParser;
 import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.util.OutlineUtil;
 
 /**
  * Parse the {@link Outline} instance along with the provided {@link String} array
@@ -118,8 +120,8 @@ public class OutlineParser {
             }
             
             // read options from within the commandClass
-            Field[] fields = commandClass.getFields();
-            if(fields.length == 0) {
+            List<Field> fields = OutlineUtil.getAllFields(commandClass);
+            if(fields.isEmpty()) {
                 // there are no fields in command
                 // let's move on
                 continue;

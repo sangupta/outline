@@ -64,10 +64,10 @@ public class IntegrationTest {
     public static class GlobalCommand {
         
         @Option(name = "-g1", type = OptionType.GLOBAL)
-        public String g1;
+        protected String g1;
         
         @Option(name = "-g2", type = OptionType.GLOBAL, arity = 2)
-        public String[] g2;
+        protected String[] g2;
         
     }
 
@@ -84,10 +84,10 @@ public class IntegrationTest {
     public static class RemoteCommand extends GlobalCommand {
         
         @Option(name = "-gr1", type = OptionType.GROUP)
-        public String gr1;
+        protected String gr1;
         
         @Option(name = "-gr2", type = OptionType.GROUP, arity = 2)
-        public String[] gr2;
+        protected String[] gr2;
         
     }
     
@@ -95,19 +95,19 @@ public class IntegrationTest {
     public static class RemoteAddCommand extends RemoteCommand {
         
         @Option(name = "-c1")
-        public String c1;
+        protected String c1;
         
         @Option(name = "-c2", arity = 2)
-        public String[] c2;
+        protected String[] c2;
         
         @Argument(order = 0)
-        public String a1;
+        protected String a1;
 
         @Argument(order = 1)
-        public String a2;
+        protected String a2;
         
         @Arguments
-        public String[] a3;
+        protected String[] a3;
         
     }
     
