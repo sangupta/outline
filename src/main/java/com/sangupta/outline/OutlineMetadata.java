@@ -29,6 +29,12 @@ import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 
 public class OutlineMetadata {
+    
+    public final boolean singleCommandMode;
+    
+    public final String name;
+    
+    public final String description;
 
     public final Map<String, Option> globalOptions = new HashMap<>();
     
@@ -42,6 +48,12 @@ public class OutlineMetadata {
     
     public final Map<String, Map<String, Option>> commandOptions = new HashMap<>();
     
+    OutlineMetadata(Outline outline) {
+        this.name = outline.name;
+        this.description = outline.description;
+        this.singleCommandMode = outline.singleCommandMode;
+    }
+
     /**
      * Validate the metadata
      * 

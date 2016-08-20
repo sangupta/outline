@@ -24,6 +24,9 @@ package com.sangupta.outline;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sangupta.outline.annotations.Command;
+import com.sangupta.outline.util.OutlineUtil;
+
 /**
  * Base class for building command outlines, or command groups.
  * 
@@ -33,6 +36,8 @@ import java.util.Set;
 public abstract class OutlineBase {
     
     final String name;
+    
+    final boolean singleCommandMode;
     
     String description;
     
@@ -46,6 +51,22 @@ public abstract class OutlineBase {
      */
     OutlineBase(String name) {
         this.name = name;
+        this.singleCommandMode = false;
+    }
+    
+    OutlineBase(Class<?> singleCommandClass) {
+        Command command = singleCommandClass.getAnnotation(Command.class);
+        if(command == null) {
+            throw new IllegalArgumentException("Command must be annotated with @Command annotation");
+        }
+        
+        this.name = command.name();
+        this.description = command.description();
+        
+        this.defaultCommand = singleCommandClass;
+        this.commands.add(singleCommandClass);
+        
+        this.singleCommandMode = true;
     }
     
     public OutlineBase withDescription(String description) {
@@ -54,11 +75,20 @@ public abstract class OutlineBase {
     }
     
     public OutlineBase withDefaultCommand(Class<?> defaultCommand) {
+        if(this.singleCommandMode) {
+            throw new IllegalStateException("Cannot set default command in single-command mode.");
+        }
+        
         this.defaultCommand = defaultCommand;
+        this.commands.add(defaultCommand);
         return this;
     }
     
     public OutlineBase withCommands(Class<?>... commands) {
+        if(this.singleCommandMode) {
+            throw new IllegalStateException("Cannot add commands in single-command mode.");
+        }
+        
         if(commands == null || commands.length == 0) {
             return this;
         }

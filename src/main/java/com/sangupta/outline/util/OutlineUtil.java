@@ -59,4 +59,20 @@ public class OutlineUtil {
         populateAllFields(clazz.getSuperclass(), fields);
     }
 
+    public static String join(String[] str, String joiner) {
+        StringBuilder builder = new StringBuilder();
+        
+        boolean first = true;
+        for(String s : str) {
+            if(!first) {
+                builder.append(joiner);
+            }
+            
+            builder.append(s);
+            first = false;
+        }
+        
+        return builder.toString();
+    }
+
 }

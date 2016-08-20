@@ -33,6 +33,7 @@ import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
+import com.sangupta.outline.help.OutlineHelpCommand;
 import com.sangupta.outline.parser.ArgumentParser;
 import com.sangupta.outline.parser.ParseResult;
 import com.sangupta.outline.util.OutlineUtil;
@@ -65,7 +66,7 @@ public class OutlineParser {
         OutlineMetadata metadata = getMetadata(outline);
         
         if(args.length == 0) {
-            if(outline.defaultCommand != null) {
+            if(outline.defaultCommand == null) {
                 return null;
             }
             
@@ -82,7 +83,7 @@ public class OutlineParser {
         // check if we are requesting help
         boolean isHelpRequested = result.command.equals(outline.helpKeyword);
         if(isHelpRequested) {
-            return showHelp(outline);
+            return new OutlineHelpCommand(metadata, result);
         }
         
         // get the command class we need to work with
@@ -104,7 +105,7 @@ public class OutlineParser {
      * @return
      */
     static OutlineMetadata getMetadata(Outline outline) {
-        OutlineMetadata metadata = new OutlineMetadata();
+        OutlineMetadata metadata = new OutlineMetadata(outline);
         
         // read all command classes and figure out all commands
         for(Class<?> commandClass : outline.commands) {
@@ -202,10 +203,6 @@ public class OutlineParser {
         }
         
         return metadata;
-    }
-
-    static Object showHelp(Outline outline) {
-        return null;
     }
 
 }

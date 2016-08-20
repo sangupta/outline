@@ -32,6 +32,7 @@ import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
+import com.sangupta.outline.help.OutlineHelpCommand;
 
 public class IntegrationTest {
     
@@ -74,8 +75,9 @@ public class IntegrationTest {
         });
         
         Object instance = outline.parse(args);
-        if(instance == null) {
-            // do nothing
+
+        if(instance instanceof OutlineHelpCommand) {
+            ((OutlineHelpCommand) instance).showHelp();
             return;
         }
         

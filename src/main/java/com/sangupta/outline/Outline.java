@@ -42,15 +42,27 @@ public class Outline extends OutlineBase {
     
     final Map<String, OutlineBase> groups = new HashMap<>();
     
+    /**
+     * Register a type converter to convert the command line {@link String} based argument to a
+     * given type of argument.
+     * 
+     * @param classOfT
+     * @param converter
+     */
     public static <T> void registerTypeConverter(Class<T> classOfT, OutlineTypeConverter<T> converter) {
         OutlineBinder.registerTypeConverter(classOfT, converter);
     }
     
     /**
-     * 
+     * Convenience constructor - this is multi-command mode.
+     *  
      */
     public Outline(String name) {
         super(name);
+    }
+    
+    public Outline(Class<?> singleCommandClass) {
+        super(singleCommandClass);
     }
     
     /**
@@ -66,6 +78,10 @@ public class Outline extends OutlineBase {
         return OutlineParser.parse(this, args);
     }
     
+    public <T> T parse(String[] args, Class<T> classOfT) {
+        return classOfT.cast(OutlineParser.parse(this, args));
+    }
+    
     @Override
     public Outline withDescription(String description) {
         this.description = description;
@@ -74,12 +90,20 @@ public class Outline extends OutlineBase {
     
     @Override
     public Outline withDefaultCommand(Class<?> defaultCommand) {
+        if(this.singleCommandMode) {
+            throw new IllegalStateException("Cannot set default command in single-command mode.");
+        }
+        
         this.defaultCommand = defaultCommand;
         return this;
     }
     
     @Override
     public Outline withCommands(Class<?>... commands) {
+        if(this.singleCommandMode) {
+            throw new IllegalStateException("Cannot add more commands in single-command mode.");
+        }
+        
         super.withCommands(commands);
         return this;
     }
@@ -95,6 +119,10 @@ public class Outline extends OutlineBase {
     }
  
     public OutlineBase withGroup(String name) {
+        if(this.singleCommandMode) {
+            throw new IllegalStateException("Cannot create groups in single-command mode.");
+        }
+        
         OutlineBase abstractOutline = new OutlineBase(name) { };
         this.groups.put(name, abstractOutline);
         return abstractOutline;
