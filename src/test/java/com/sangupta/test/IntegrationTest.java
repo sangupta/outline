@@ -50,6 +50,7 @@ public class IntegrationTest {
                .withCommands(GroupAddCommand.class, GroupRemoveCommand.class);
         
         args = "-g1 op1 -g2 op2 op3 remote -gr1 op4 -gr2 op5 op6 radd -c1 op7 -c2 op8 op9 arg1 arg2 arg3 arg4".split(" ");
+        args = new String[] { "help" };
         
         Outline.registerTypeConverter(String[].class, new OutlineTypeConverter<String[]>() {
 
@@ -85,11 +86,14 @@ public class IntegrationTest {
     }
     
     public static class GlobalCommand {
+    	
+    	@Option(name = "--global", description = "This is some description for the global flag", type = OptionType.GLOBAL, arity = 0)
+    	protected String g;
         
-        @Option(name = "-g1", type = OptionType.GLOBAL)
+        @Option(name = { "-g1", "--global1" }, description = "This is some description for the global1 flag", type = OptionType.GLOBAL)
         protected String g1;
         
-        @Option(name = "-g2", type = OptionType.GLOBAL, arity = 2)
+        @Option(name = { "-g2", "--global2" }, description = "This is some description for the global2 flag", type = OptionType.GLOBAL, arity = 2)
         protected String[] g2;
         
     }
@@ -114,7 +118,7 @@ public class IntegrationTest {
         
     }
     
-    @Command(group = "remote", name = "radd", description = "remote add command")
+    @Command(group = "remote", name = "radd", description = "remote add global command")
     public static class RemoteAddCommand extends RemoteCommand {
         
         @Option(name = "-c1")
@@ -134,17 +138,17 @@ public class IntegrationTest {
         
     }
     
-    @Command(group = "remote", name = "remove", description = "remote remove command")
+    @Command(group = "remote", name = "remove", description = "remote remove global command")
     public static class RemoteRemoveCommand extends RemoteCommand {
         
     }
     
-    @Command(name = "add", description = "remote add command")
+    @Command(name = "add", description = "remote add group command")
     public static class GroupAddCommand extends GlobalCommand  {
         
     }
     
-    @Command(name = "remove", description = "remote remove command")
+    @Command(name = "remove", description = "remote remove group command")
     public static class GroupRemoveCommand extends GlobalCommand {
         
     }

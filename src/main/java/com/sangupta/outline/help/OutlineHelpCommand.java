@@ -23,9 +23,12 @@ package com.sangupta.outline.help;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.OutlineMetadata;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
@@ -76,13 +79,12 @@ public class OutlineHelpCommand {
      * @return
      */
     private List<String> showSingleCommandHelp() {
-        List<String> lines = newHelpLines();
+        List<String> lines = new ArrayList<>();
         
-        lines.add(this.meta.name);
+        lines.add(this.meta.name + ": " + this.meta.description);
         lines.add(null);
-        lines.add("\t" + this.meta.description);
-        lines.add(null);
-        lines.add("usage: " + getUsage());
+        lines.add("Usage:");
+        lines.add(getUsage());
         lines.add(null);
         lines.addAll(getOptions());
         
@@ -96,6 +98,9 @@ public class OutlineHelpCommand {
      */
     private List<String> getOptions() {
         List<String> lines = new ArrayList<>();
+        
+        lines.add("Available options:");
+        lines.add(null);
         
         // add all global options
         lines.addAll(buildForOptions(this.meta.globalOptions));
@@ -121,12 +126,19 @@ public class OutlineHelpCommand {
      */
     private List<String> buildForOptions(Map<String, Option> optionMap) {
         List<String> lines = new ArrayList<>();
+        
+        if(AssertUtils.isEmpty(optionMap)) {
+        	return lines;
+        }
 
-        Collection<Option> options = optionMap.values();
+        Collection<Option> optionsCollection = optionMap.values();
+        
+        Set<Option> options = new HashSet<>(optionsCollection);
         for(Option option : options) {
             String[] names = option.name();
             lines.add("\t" + OutlineUtil.join(names, ", "));
             lines.add("\t\t" + option.description());
+            lines.add(null);
         }
         
         return lines;
@@ -157,7 +169,57 @@ public class OutlineHelpCommand {
      * @return
      */
     private String getUsage() {
-        return null;
+    	StringBuilder builder = new StringBuilder(1024);
+    	
+    	builder.append('\t');
+    	builder.append(this.meta.name);
+    	builder.append(' ');
+    	
+    	// all global options must be shown here
+    	if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
+    		boolean first = true;
+    		
+    		// show one for each of the param
+    		Set<Option> options = new HashSet<>(this.meta.globalOptions.values());
+    		for(Option option : options) {
+    			String[] names = option.name();
+    			builder.append(" [");
+    			
+    			first = true;
+    			if(names.length > 1) {
+    				builder.append('(');
+    			}
+    			for(String name : names) {
+    				if(!first) {
+    					builder.append(" | ");
+    				}
+    				
+    				first = false;
+    				builder.append(name);
+    			}
+    			if(names.length > 1) {
+    				builder.append(')');
+    			}
+
+    			for(int index = 0; index < option.arity(); index++) {
+    				if(option.arity() == 1) {
+    					builder.append(" <arg>");
+    				} else {
+    					builder.append(" <arg" + (index + 1) + ">");
+    				}
+    			}
+    			
+    			builder.append(']');
+    		}
+    	}
+    	
+    	// then we show the command
+    	builder.append(" <command>");
+    	
+    	// and lastly we need to display the arguments that can be passed
+    	builder.append(" [<args>]");
+    	
+    	return builder.toString();
     }
 
     /**
@@ -175,7 +237,47 @@ public class OutlineHelpCommand {
      * @return
      */
     private List<String> showHelpSummary() {
-        return null;
+    	List<String> lines = new ArrayList<>();
+        
+        lines.add(this.meta.name + ": " + this.meta.description);
+        lines.add(null);
+        lines.add("Usage:");
+        lines.add(getUsage());
+        lines.add(null);
+        lines.addAll(getOptions());
+        lines.add(null);
+        lines.addAll(getCommands());
+        
+        return lines;
     }
+
+    /**
+     * Return information on all available commands - this could be list of all
+     * commands at global level, or at group level
+     * 
+     * @return
+     */
+	private List<String> getCommands() {
+		List<String> lines = new ArrayList<>();
+		
+        lines.add("Available commands:");
+        lines.add(null);
+        
+        if(AssertUtils.isNotEmpty(this.meta.commandNames)) {
+        	Set<Command> commands = new HashSet<>(this.meta.commandNames.values());
+        	for(Command command : commands) {
+        		if(command == null) {
+        			// this happens because of the help keyword
+        			continue;
+        		}
+        		
+                lines.add("\t" + command.name());
+                lines.add("\t\t" + command.description());
+                lines.add(null);
+        	}
+        }
+		
+		return lines;
+	}
 
 }

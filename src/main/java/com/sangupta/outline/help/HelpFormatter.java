@@ -15,7 +15,10 @@ public class HelpFormatter {
         StringBuilder builder = new StringBuilder(256 * helpLines.size());
         
         for(String line : helpLines) {
-            builder.append(line);
+        	if(line != null) {
+        		builder.append(line);
+        	}
+        	
             builder.append(StringUtils.SYSTEM_NEW_LINE);
         }
         
