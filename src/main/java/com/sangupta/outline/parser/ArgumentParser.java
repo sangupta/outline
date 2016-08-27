@@ -75,6 +75,11 @@ public class ArgumentParser {
         
         String name = iterator.peek();
         if(!metadata.commandNames.containsKey(name)) {
+        	if(metadata.helpOnIncorrectArguments) {
+        		result.command = metadata.helpKeyword;
+        		return;
+        	}
+        	
             throw new RuntimeException("Error parsing argument: " + iterator.peek());
         }
         

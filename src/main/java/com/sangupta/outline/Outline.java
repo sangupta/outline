@@ -143,5 +143,10 @@ public class Outline extends OutlineBase {
         
         return null;
     }
+
+	public Outline withHelpOnIncorrectArguments(boolean helpOnIncorrectArguments) {
+		this.helpOnIncorrectArguments = helpOnIncorrectArguments;
+		return this;
+	}
     
 }

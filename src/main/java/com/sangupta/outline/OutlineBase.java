@@ -43,6 +43,12 @@ public abstract class OutlineBase {
     
     Class<?> defaultCommand;
     
+    public boolean isHelpOnIncorrectArguments() {
+		return helpOnIncorrectArguments;
+	}
+
+	boolean helpOnIncorrectArguments;
+    
     final Set<Class<?>> commands = new HashSet<>();
     
     /**

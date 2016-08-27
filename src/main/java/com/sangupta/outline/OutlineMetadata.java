@@ -35,6 +35,10 @@ public class OutlineMetadata {
     public final String name;
     
     public final String description;
+    
+    public final boolean helpOnIncorrectArguments;
+    
+    public final String helpKeyword;
 
     public final Map<String, Option> globalOptions = new HashMap<>();
     
@@ -52,6 +56,8 @@ public class OutlineMetadata {
         this.name = outline.name;
         this.description = outline.description;
         this.singleCommandMode = outline.singleCommandMode;
+        this.helpOnIncorrectArguments = outline.isHelpOnIncorrectArguments();
+        this.helpKeyword = outline.helpKeyword;
     }
 
     /**
