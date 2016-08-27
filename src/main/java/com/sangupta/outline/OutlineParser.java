@@ -107,6 +107,10 @@ public class OutlineParser {
     static OutlineMetadata getMetadata(Outline outline) {
         OutlineMetadata metadata = new OutlineMetadata(outline);
         
+        // the first thing we add is the help keyword
+        // the command can be set to null - as we do not need to define it now
+        metadata.commandNames.put(outline.helpKeyword, null);
+        
         // read all command classes and figure out all commands
         for(Class<?> commandClass : outline.commands) {
             // read command details
