@@ -42,14 +42,39 @@ public class OutlineMetadata {
 
     public final Map<String, Option> globalOptions = new HashMap<>();
     
+    /**
+	 * Mapping between each command name and the corresponding {@link Class}
+	 * object that implements that command
+	 */
     public final Map<String, Class<?>> commandClasses = new HashMap<>();
     
+    /**
+     * Mapping between each command and whether it has arguments specified or not
+     * 
+     */
+    public final Map<String, Boolean> commandHasArguments = new HashMap<>();
+    
+    /**
+     * Mapping between each command name and the {@link Command} object
+     */
     public final Map<String, Command> commandNames = new HashMap<>();
     
+    /**
+	 * Mapping between the group name and all the {@link Command} objects for
+	 * all commands that fall under that group
+	 */
     public final SimpleMultiMap<String, Command> commandGroups = new SimpleMultiMap<>();
     
+    /**
+	 * Mapping between the group name and all the {@link Option}s that are
+	 * applicable to that group
+	 */
     public final Map<String, Map<String, Option>> groupOptions = new HashMap<>();
     
+    /**
+     * Mapping between the command name and all {@link Option}s that are applicable to
+     * the command.
+     */
     public final Map<String, Map<String, Option>> commandOptions = new HashMap<>();
     
     OutlineMetadata(Outline outline) {

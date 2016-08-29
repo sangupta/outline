@@ -21,6 +21,7 @@
  
 package com.sangupta.outline.help;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sangupta.jerry.util.AssertUtils;
+import com.sangupta.outline.Outline;
 import com.sangupta.outline.OutlineMetadata;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
@@ -43,22 +45,89 @@ import com.sangupta.outline.util.OutlineUtil;
  */
 public class OutlineHelp {
     
+	/**
+	 * The metadata associated with this {@link Outline} generation
+	 * 
+	 */
     protected final OutlineMetadata meta;
     
+    /**
+     * The result of parsing the arguments
+     */
     protected final ParseResult result;
+    
+    /**
+     * Indicates whether help been requested
+     */
+	protected final boolean helpRequested;
 
-    public OutlineHelp(OutlineMetadata metadata, ParseResult result) {
+	/**
+	 * Convenience constructor.
+	 * 
+	 * @param metadata
+	 * @param result
+	 * @param helpRequested
+	 */
+    public OutlineHelp(OutlineMetadata metadata, ParseResult result, boolean helpRequested) {
         this.meta = metadata;
         this.result = result;
+        this.helpRequested = helpRequested;
     }
 
     /**
-     * Show the help as requested on console.
+     * Returns whether help has been requested by the user or not.
+     * 
+     * @return
+     */
+    public boolean isHelpRequested() {
+		return helpRequested;
+	}
+
+    /**
+     * Display help if it has been requested. Returns <code>true</code> if help was
+     * requested, <code>false</code> otherwise.
+     * 
+     * @return
+     */
+    public boolean showHelpIfRequested() {
+    	if(this.helpRequested) {
+    		this.showHelp();
+    		return true;
+    	}
+    	
+    	return false;
+    }
+
+    /**
+     * Show the help on console: <code>System.out</code>, even if it has not been requested.
      * 
      */
     public void showHelp() {
+    	this.showHelp(System.out);
+    }
+    
+    /**
+     * Write the help text on the given {@link PrintStream} instance, even if it has
+     * not been requested.
+     * 
+     * @param stream
+     */
+    public void showHelp(PrintStream stream) {
+    	if(stream == null) {
+    		throw new IllegalArgumentException("PrintStream cannot be null");
+    	}
+    	
+    	stream.println(this.getHelpText());
+    }
+    
+    /**
+     * Construct the help text for whatever has been requested.
+     * 
+     * @return
+     */
+    private String getHelpText() {
         List<String> helpLines = getHelpLines();
-        System.out.println(HelpFormatter.format(helpLines));
+        return HelpFormatter.format(helpLines);
     }
     
     /**
@@ -89,9 +158,9 @@ public class OutlineHelp {
         lines.add(this.meta.name + ": " + this.meta.description);
         lines.add(null);
         lines.add("Usage:");
-        lines.add(getUsage());
+        lines.add(getUsageLine());
         lines.add(null);
-        lines.addAll(getOptions());
+        lines.addAll(getOptionsSection());
         
         return lines;
     }
@@ -101,8 +170,12 @@ public class OutlineHelp {
      * 
      * @return
      */
-    private List<String> getOptions() {
+    private List<String> getOptionsSection() {
         List<String> lines = new ArrayList<>();
+        
+        if(this.meta.globalOptions.isEmpty() && this.meta.commandOptions.isEmpty()) {
+        	return lines;
+        }
         
         lines.add("Available options:");
         lines.add(null);
@@ -162,7 +235,7 @@ public class OutlineHelp {
         lines.add("\t" + this.meta.description);
         lines.add(null);
         lines.add("Usage:");
-        lines.add("\t" + getUsage());
+        lines.add("\t" + getUsageLine());
         lines.add(null);
         
         return lines;
@@ -173,7 +246,7 @@ public class OutlineHelp {
      * 
      * @return
      */
-    private String getUsage() {
+    private String getUsageLine() {
     	StringBuilder builder = new StringBuilder(1024);
     	
     	builder.append('\t');
@@ -219,10 +292,21 @@ public class OutlineHelp {
     	}
     	
     	// then we show the command
-    	builder.append(" <command>");
+    	// this is only applicable for multi-command mode
+    	if(!this.meta.singleCommandMode) {
+    		builder.append(" <command>");
+    	}
     	
     	// and lastly we need to display the arguments that can be passed
-    	builder.append(" [<args>]");
+    	// this needs to be displayed, only if there are arguments that can be applied
+    	// to a command
+    	if(this.meta.singleCommandMode) {
+    		if(!this.meta.commandHasArguments.isEmpty()) {
+    			builder.append(" [<args>]");
+    		}
+    	} else {
+    		builder.append(" [<args>]");
+    	}
     	
     	return builder.toString();
     }
@@ -247,9 +331,9 @@ public class OutlineHelp {
         lines.add(this.meta.name + ": " + this.meta.description);
         lines.add(null);
         lines.add("Usage:");
-        lines.add(getUsage());
+        lines.add(getUsageLine());
         lines.add(null);
-        lines.addAll(getOptions());
+        lines.addAll(getOptionsSection());
         lines.add(null);
         lines.addAll(getCommands());
         
