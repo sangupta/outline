@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import com.sangupta.jerry.util.StringUtils;
 import com.sangupta.outline.Outline;
-import com.sangupta.outline.annotations.Argument;
-import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
@@ -19,7 +17,7 @@ public class OutlineSingleCommandCreationCases {
 	
 	@Test
 	public void testExceptions() {
-		Outline outline;
+		Outline outline = null;
 		
 		try {
 			outline = new Outline((Class<?>) null);
@@ -76,6 +74,9 @@ public class OutlineSingleCommandCreationCases {
 			Assert.assertEquals("ping", e.className);
 			Assert.assertEquals("gr1", e.field);
 		}
+		
+		// this must be null - as all are error cases above
+		Assert.assertNull(outline);
 	}
 
 	@Command(name = "ping", description = "Ping networks")

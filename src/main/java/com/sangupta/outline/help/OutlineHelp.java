@@ -22,8 +22,10 @@
 package com.sangupta.outline.help;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,9 @@ import java.util.Set;
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.OutlineMetadata;
+import com.sangupta.outline.OutlineParser;
+import com.sangupta.outline.annotations.Argument;
+import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.parser.ParseResult;
@@ -161,11 +166,102 @@ public class OutlineHelp {
         lines.add(getUsageLine());
         lines.add(null);
         lines.addAll(getOptionsSection());
+        lines.add(null);
+        lines.addAll(getArgumentsSection());
         
         return lines;
     }
+    
+    /**
+     * Create the help lines for applicable arguments to the command.
+     * 
+     * @return
+     */
+    private List<String> getArgumentsSection() {
+    	List<String> lines = new ArrayList<>();
+
+    	lines.add("Available arguments:");
+    	lines.add(null);
+    	
+    	if(this.meta.singleCommandMode) {
+    		if(this.meta.commandOptions.isEmpty()) {
+    			return lines;
+    		}
+    		
+    		lines.addAll(buildArgumentsForCommand(this.meta.commandClasses.values().iterator().next()));
+    	}
+    	
+    	return lines;
+    }
 
     /**
+     * Create the list of all arguments that are applicable to this particular command.
+     * 
+     * @param class1
+     * @return
+     */
+    private List<String> buildArgumentsForCommand(Class<?> clazz) {
+		List<String> lines = new ArrayList<>();
+		
+		List<Field> fields = OutlineUtil.getAllFields(clazz);
+		if(AssertUtils.isEmpty(fields)) {
+			return lines;
+		}
+		
+		Arguments args = null;
+		
+		List<Argument> arguments = new ArrayList<>();
+		for(Field field : fields) {
+			Argument argument = field.getAnnotation(Argument.class);
+			if(argument != null) {
+				arguments.add(argument);
+				continue;
+			}
+			
+			Arguments args2 = field.getAnnotation(Arguments.class);
+			if(args2 != null) {
+				args = args2;
+			}
+		}
+		
+		if(AssertUtils.isNotEmpty(arguments)) {
+			// sort them
+			Collections.sort(arguments, OutlineParser.ARGUMENTS_SORTER);
+			
+			// iterate over them
+			int count = 1;
+			for(Argument arg : arguments) {
+				lines.add("\t<" + nonEmpty(arg.title(), "arg" + count++) + ">");
+				lines.add("\t\t" + arg.description());
+				lines.add(null);
+			}
+		}
+		
+		if(args != null) {
+			lines.add("\t<" + nonEmpty(args.title(), "arguments") + ">");
+			lines.add("\t\t" + args.description());
+			lines.add(null);
+		}
+		
+		return lines;
+	}
+    
+    /**
+     * Return the first non-empty value.
+     * 
+     * @param value1
+     * @param value2
+     * @return
+     */
+    private static String nonEmpty(String value1, String value2) {
+    	if(AssertUtils.isNotEmpty(value1)) {
+    		return value1;
+    	}
+    	
+    	return value2;
+    }
+
+	/**
      * Create the help lines for applicable options.
      * 
      * @return
@@ -190,7 +286,11 @@ public class OutlineHelp {
         
         // add all command options
         if(this.result.command != null) {
-            lines.addAll(buildForOptions(this.meta.commandOptions.get(this.result.command)));
+        	if(this.meta.singleCommandMode) {
+        		lines.addAll(buildForOptions(this.meta.commandOptions.values().iterator().next()));
+        	} else {
+        		lines.addAll(buildForOptions(this.meta.commandOptions.get(this.result.command)));
+        	}
         }
         
         return lines;

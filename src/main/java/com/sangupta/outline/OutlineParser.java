@@ -22,6 +22,7 @@
 package com.sangupta.outline;
 
 import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,15 @@ public class OutlineParser {
      * My private logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(OutlineParser.class);
+    
+    public static final Comparator<Argument> ARGUMENTS_SORTER = new Comparator<Argument>() {
+		
+		@Override
+		public int compare(Argument o1, Argument o2) {
+			return Integer.compare(o1.order(), o2.order()); 
+		}
+		
+	};
 
     /**
      * Parse the command line arguments against the given {@link Outline} object
