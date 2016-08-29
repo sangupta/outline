@@ -35,7 +35,7 @@ import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
-import com.sangupta.outline.help.OutlineHelpCommand;
+import com.sangupta.outline.help.OutlineHelp;
 
 public class IntegrationTest {
     
@@ -82,7 +82,7 @@ public class IntegrationTest {
         Object instance = outline.parse(args);
         
         Assert.assertNotNull(instance);
-        Assert.assertTrue(instance instanceof OutlineHelpCommand);
+        Assert.assertTrue(instance instanceof OutlineHelp);
         
         // test for a specific command
         args = "-g1 op1 -g2 op2 op3 remote -gr1 op4 -gr2 op5 op6 radd -c1 op7 -c2 op8 op9 arg1 arg2 arg3 arg4".split(" ");
@@ -106,8 +106,8 @@ public class IntegrationTest {
         instance = outline.parse(args);
         
         Assert.assertNotNull(instance);
-        Assert.assertTrue(instance instanceof OutlineHelpCommand);
-        ((OutlineHelpCommand) instance).showHelp();
+        Assert.assertTrue(instance instanceof OutlineHelp);
+        ((OutlineHelp) instance).showHelp();
     }
     
     public static class GlobalCommand {

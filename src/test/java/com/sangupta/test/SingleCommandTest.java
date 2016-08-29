@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.annotations.Command;
-import com.sangupta.outline.help.OutlineHelpCommand;
+import com.sangupta.outline.help.OutlineHelp;
 
 public class SingleCommandTest {
     
@@ -18,7 +18,7 @@ public class SingleCommandTest {
     public static class PingCommand {
     	
     	@Inject
-    	public OutlineHelpCommand helpCommand;
+    	public OutlineHelp helpCommand;
         
     }
     

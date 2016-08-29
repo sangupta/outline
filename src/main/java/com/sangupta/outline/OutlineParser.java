@@ -37,7 +37,7 @@ import com.sangupta.jerry.util.ReflectionUtils;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
-import com.sangupta.outline.help.OutlineHelpCommand;
+import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.ArgumentParser;
 import com.sangupta.outline.parser.ParseResult;
 import com.sangupta.outline.util.OutlineUtil;
@@ -87,7 +87,7 @@ public class OutlineParser {
         // check if we are requesting help
         boolean isHelpRequested = result.command.equals(outline.helpKeyword);
         if(isHelpRequested) {
-        	final OutlineHelpCommand helpCommand = new OutlineHelpCommand(metadata, result);
+        	final OutlineHelp helpCommand = new OutlineHelp(metadata, result);
         	
         	if(metadata.singleCommandMode) {
         		// this is single command mode
@@ -116,7 +116,16 @@ public class OutlineParser {
         return instance;
     }
 
-    private static void injectHelpOptionsIfAvailable(Object instance, OutlineHelpCommand helpCommand) {
+    /**
+     * Inject the field of type {@link OutlineHelp} in the given object instance if a field
+     * annotated with <code>@Inject</code> of the same type is present. Does nothing if either
+     * of instance or helpCommand value is <code>null</code>.
+     * 
+     * @param instance the instance in which to inject
+     * 
+     * @param helpCommand the value to inject
+     */
+    private static void injectHelpOptionsIfAvailable(Object instance, OutlineHelp helpCommand) {
 		Field[] fields = instance.getClass().getFields();
 		if(AssertUtils.isEmpty(fields)) {
 			return;
@@ -130,7 +139,7 @@ public class OutlineParser {
 			
 			// injection is enabled
 			// let's check field type
-			if(!OutlineHelpCommand.class.isAssignableFrom(field.getType())) {
+			if(!OutlineHelp.class.isAssignableFrom(field.getType())) {
 				continue;
 			}
 			

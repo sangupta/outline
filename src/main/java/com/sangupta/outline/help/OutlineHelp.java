@@ -35,14 +35,19 @@ import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.parser.ParseResult;
 import com.sangupta.outline.util.OutlineUtil;
 
-@Command(name = "help", description = "Display help information")
-public class OutlineHelpCommand {
+/**
+ * Represents HELP for the Outline based commands.
+ * 
+ * @author sangupta
+ *
+ */
+public class OutlineHelp {
     
     protected final OutlineMetadata meta;
     
     protected final ParseResult result;
 
-    public OutlineHelpCommand(OutlineMetadata metadata, ParseResult result) {
+    public OutlineHelp(OutlineMetadata metadata, ParseResult result) {
         this.meta = metadata;
         this.result = result;
     }
