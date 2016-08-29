@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sangupta.outline.annotations.Command;
-import com.sangupta.outline.util.OutlineUtil;
 
 /**
  * Base class for building command outlines, or command groups.
