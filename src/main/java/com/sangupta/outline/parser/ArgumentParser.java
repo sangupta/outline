@@ -27,6 +27,7 @@ import com.sangupta.jerry.ds.SimpleMultiMap;
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.OutlineMetadata;
 import com.sangupta.outline.annotations.Option;
+import com.sangupta.outline.exceptions.InvalidOutlineArgumentException;
 
 public class ArgumentParser {
 
@@ -80,7 +81,7 @@ public class ArgumentParser {
         		return;
         	}
         	
-            throw new RuntimeException("Error parsing argument: " + iterator.peek());
+            throw new InvalidOutlineArgumentException(iterator.peek(), iterator.getPosition());
         }
         
         // the command name

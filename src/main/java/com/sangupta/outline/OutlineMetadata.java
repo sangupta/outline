@@ -40,6 +40,10 @@ public class OutlineMetadata {
     
     public final String helpKeyword;
 
+    /**
+     * Mapping between all applicable global options - their name and actual
+     * {@link Option} instance
+     */
     public final Map<String, Option> globalOptions = new HashMap<>();
     
     /**

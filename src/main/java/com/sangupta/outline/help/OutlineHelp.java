@@ -305,7 +305,16 @@ public class OutlineHelp {
     			builder.append(" [<args>]");
     		}
     	} else {
-    		builder.append(" [<args>]");
+    		if(AssertUtils.isEmpty(this.result.group)) {
+    			// group is not applicable - this is for all commands within the eco-system
+    			if(!this.meta.commandHasArguments.isEmpty()) {
+    				builder.append(" [<args>]");
+    			}
+    		} else {
+    			// group is applicable
+    			List<Command> commands = this.meta.commandGroups.getValues(this.result.group);
+    			
+    		}
     	}
     	
     	return builder.toString();

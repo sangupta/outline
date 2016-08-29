@@ -32,6 +32,10 @@ class StringArrayIterator implements Iterator<String> {
     public StringArrayIterator(String[] items) {
         this.items = items;
     }
+    
+    public int getPosition() {
+    	return this.position;
+    }
 
     @Override
     public boolean hasNext() {

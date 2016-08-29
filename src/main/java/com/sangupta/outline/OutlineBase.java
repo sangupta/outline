@@ -42,10 +42,6 @@ public abstract class OutlineBase {
     
     Class<?> defaultCommand;
     
-    public boolean isHelpOnIncorrectArguments() {
-		return helpOnIncorrectArguments;
-	}
-
 	boolean helpOnIncorrectArguments = true;
     
     final Set<Class<?>> commands = new HashSet<>();
@@ -105,8 +101,23 @@ public abstract class OutlineBase {
         return this;
     }
 
+    /**
+     * Check if we have a command for the given {@link Class}.
+     * 
+     * @param commandClass
+     * @return
+     */
     public boolean hasCommand(Class<?> commandClass) {
         return this.commands.contains(commandClass);
     }
     
+    /**
+     * Whether to return help on incorrect arguments.
+     * 
+     * @return
+     */
+    public boolean isHelpOnIncorrectArguments() {
+		return this.helpOnIncorrectArguments;
+	}
+
 }

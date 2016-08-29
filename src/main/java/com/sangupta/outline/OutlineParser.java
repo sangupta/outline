@@ -113,6 +113,9 @@ public class OutlineParser {
         Class<?> inferredCommand = metadata.commandClasses.get(result.command);
         Object instance = outline.commandFactory.createInstance(inferredCommand);
         
+        // inject the help options in this object
+		injectHelpOptionsIfAvailable(instance, helpCommand);
+        
         // bind the object to its available properties
         OutlineBinder.bindInstanceToProperties(inferredCommand, instance, result);
         
