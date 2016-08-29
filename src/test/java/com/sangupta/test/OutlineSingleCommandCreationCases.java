@@ -1,9 +1,19 @@
 package com.sangupta.test;
 
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.sangupta.jerry.util.StringUtils;
 import com.sangupta.outline.Outline;
+import com.sangupta.outline.annotations.Argument;
+import com.sangupta.outline.annotations.Arguments;
+import com.sangupta.outline.annotations.Command;
+import com.sangupta.outline.annotations.Option;
+import com.sangupta.outline.annotations.OptionType;
+import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
+import com.sangupta.outline.help.OutlineHelp;
 
 public class OutlineSingleCommandCreationCases {
 	
@@ -54,6 +64,32 @@ public class OutlineSingleCommandCreationCases {
 		} catch(IllegalStateException e) {
 			Assert.assertTrue(true);
 		}
+		
+		// single command with group option
+		try {
+			outline = new Outline(PingCommandWithGroupOption.class).parse(StringUtils.EMPTY_STRING_LIST);
+			
+			Assert.assertTrue(false);
+		} catch(InvalidOutlineConfigurationException e) {
+			Assert.assertTrue(true);
+			
+			Assert.assertEquals("ping", e.className);
+			Assert.assertEquals("gr1", e.field);
+		}
 	}
 
+	@Command(name = "ping", description = "Ping networks")
+	public static class PingCommandWithGroupOption {
+		
+		@Inject
+		public OutlineHelp helpCommand;
+		
+		@Option(name = "--global", description = "This is some description for the global flag", type = OptionType.GLOBAL, arity = 0)
+		protected String g;
+	    
+	    @Option(name = "-gr1", type = OptionType.GROUP)
+	    protected String gr1;
+	    
+	}
+	
 }

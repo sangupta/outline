@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sangupta.outline.Outline;
@@ -38,22 +39,9 @@ import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
 import com.sangupta.outline.help.OutlineHelp;
 
 public class IntegrationTest {
-    
-	@Test
-    public void testMultiCommand() {
-        Outline outline = new Outline("git")
-                                    .withDescription("the powerful SCM tool")
-                                    .withDefaultCommand(AddCommand.class)
-                                    .withHelpKeyword("help")
-                                    .withCommandFactory(new DefaultCommandFactory())
-                                    .withCommands(AddCommand.class, ResetCommand.class)
-                                    .withCommands(RemoteAddCommand.class, RemoteRemoveCommand.class)
-                                    .withHelpOnIncorrectArguments(true);
-        
-        outline.withGroup("mygroup")
-               .withDescription("some stupid group")
-               .withCommands(GroupAddCommand.class, GroupRemoveCommand.class);
-        
+	
+	@BeforeClass
+	public static void beforeTests() {
         Outline.registerTypeConverter(String[].class, new OutlineTypeConverter<String[]>() {
 
             @Override
@@ -76,6 +64,24 @@ public class IntegrationTest {
             }
             
         });
+	}
+	
+	@Test
+    public void testMultiCommand() {
+        Outline outline = new Outline("git")
+                                    .withDescription("the powerful SCM tool")
+                                    .withDefaultCommand(AddCommand.class)
+                                    .withHelpKeyword("help")
+                                    .withCommandFactory(new DefaultCommandFactory())
+                                    .withCommands(AddCommand.class, ResetCommand.class)
+                                    .withCommands(RemoteAddCommand.class, RemoteRemoveCommand.class)
+                                    .withHelpOnIncorrectArguments(true);
+        
+        outline.withGroup("mygroup")
+               .withDescription("some stupid group")
+               .withCommands(GroupAddCommand.class, GroupRemoveCommand.class);
+        
+
         
         // test that the instance is perfectly populated
         String[] args = new String[] { "" };
@@ -109,8 +115,10 @@ public class IntegrationTest {
         Assert.assertTrue(instance instanceof OutlineHelp);
         ((OutlineHelp) instance).showHelp();
     }
+	
+	// All supporting classes ahead
     
-    public static class GlobalCommand {
+    public static abstract class GlobalCommand {
     	
     	@Option(name = "--global", description = "This is some description for the global flag", type = OptionType.GLOBAL, arity = 0)
     	protected String g;

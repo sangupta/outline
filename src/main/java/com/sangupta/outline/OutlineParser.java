@@ -38,6 +38,7 @@ import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
+import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
 import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.ArgumentParser;
 import com.sangupta.outline.parser.ParseResult;
@@ -217,8 +218,7 @@ public class OutlineParser {
         readFieldData(commandClass, metadata, commandName, group);
 	}
 
-	private static void readFieldData(Class<?> commandClass, OutlineMetadata metadata, final String commandName,
-			String group) {
+	private static void readFieldData(Class<?> commandClass, OutlineMetadata metadata, final String commandName, String group) {
 		// read options from within the commandClass
         List<Field> fields = OutlineUtil.getAllFields(commandClass);
         if(fields.isEmpty()) {
@@ -268,10 +268,14 @@ public class OutlineParser {
 		        break;
 		    
 		    case GROUP:
+		    	if(metadata.singleCommandMode) {
+		    		throw new InvalidOutlineConfigurationException(commandName, field.getName(), "Group option specified in single-command mode");
+		    	}
+		    	
 		        if(group == null) {
 		            throw new RuntimeException("Group option from command is not a part of any group");
 		        }
-
+		        
 		        map = metadata.groupOptions.get(group);
 		        if(map == null) {
 		            map = new HashMap<>();

@@ -36,7 +36,7 @@ public class SingleCommandTest {
         Assert.assertNotNull(ping.helpCommand);
         Assert.assertTrue(ping.helpCommand.isHelpRequested());
     }
-
+	
 	@Test
     public void testRandomNonHelpArgumentWithErrorCheckDisabled() {
     	String[] args = new String[] { "sangupta" };
@@ -53,4 +53,15 @@ public class SingleCommandTest {
     	}
     }
 
+	@Test
+	public void testHelpDisplay() {
+		String[] args = new String[] { "help" };
+		PingCommandForTest ping = new Outline(PingCommandForTest.class).withHelpOnIncorrectArguments(true).parse(args);
+		
+		Assert.assertTrue(true);
+        Assert.assertNotNull(ping.helpCommand);
+        Assert.assertTrue(ping.helpCommand.isHelpRequested());
+        
+        ping.helpCommand.showHelpIfRequested();
+	}
 }
