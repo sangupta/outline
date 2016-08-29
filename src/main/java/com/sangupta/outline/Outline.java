@@ -36,7 +36,7 @@ import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
  */
 public class Outline extends OutlineBase {
     
-    String helpKeyword;
+    String helpKeyword = "help";
     
     CommandFactory commandFactory = new DefaultCommandFactory();
     
@@ -79,7 +79,8 @@ public class Outline extends OutlineBase {
     }
     
     public <T> T parse(String[] args, Class<T> classOfT) {
-        return classOfT.cast(OutlineParser.parse(this, args));
+    	Object instance = OutlineParser.parse(this, args);
+        return classOfT.cast(instance);
     }
     
     @Override

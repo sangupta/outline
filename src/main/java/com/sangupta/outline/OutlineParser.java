@@ -25,11 +25,15 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sangupta.jerry.util.AssertUtils;
+import com.sangupta.jerry.util.ReflectionUtils;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
@@ -83,7 +87,22 @@ public class OutlineParser {
         // check if we are requesting help
         boolean isHelpRequested = result.command.equals(outline.helpKeyword);
         if(isHelpRequested) {
-            return new OutlineHelpCommand(metadata, result);
+        	final OutlineHelpCommand helpCommand = new OutlineHelpCommand(metadata, result);
+        	
+        	if(metadata.singleCommandMode) {
+        		// this is single command mode
+        		// we need to throw back the command instance back that has an injection of the OutlineHelpCommand property
+        		Class<?> instanceClass = metadata.commandClasses.values().iterator().next();
+        		Object instance = outline.commandFactory.createInstance(instanceClass);
+        		
+        		// inject the help options in this object
+        		injectHelpOptionsIfAvailable(instance, helpCommand);
+        		
+        		// return the prepared instance
+        		return instance;
+        	}
+        	
+            return helpCommand; 
         }
         
         // get the command class we need to work with
@@ -97,7 +116,34 @@ public class OutlineParser {
         return instance;
     }
 
-    /**
+    private static void injectHelpOptionsIfAvailable(Object instance, OutlineHelpCommand helpCommand) {
+		Field[] fields = instance.getClass().getFields();
+		if(AssertUtils.isEmpty(fields)) {
+			return;
+		}
+		
+		for(Field field : fields) {
+			Inject inject = field.getAnnotation(Inject.class);
+			if(inject == null) {
+				continue;
+			}
+			
+			// injection is enabled
+			// let's check field type
+			if(!OutlineHelpCommand.class.isAssignableFrom(field.getType())) {
+				continue;
+			}
+			
+			try {
+				ReflectionUtils.bindValue(field, instance, helpCommand);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+
+	/**
      * Read the {@link Outline} and generate the {@link OutlineMetadata} that contains
      * all information that is required to populate command needed, and all its arguments.
      *  
