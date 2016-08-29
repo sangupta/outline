@@ -1,5 +1,9 @@
 # Outline
 
+[![Build Status](https://travis-ci.org/sangupta/outline.svg?branch=master)](https://travis-ci.org/sangupta/outline)
+[![Coverage Status](https://coveralls.io/repos/github/sangupta/outline/badge.svg?branch=master)](https://coveralls.io/github/sangupta/outline?branch=master)
+[![Maven Version](https://maven-badges.herokuapp.com/maven-central/com.sangupta/outline/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.sangupta/outline)
+
 `Outline` is a Java-annotation based command line argument parser loosely based on 
 https://github.com/airlift/airline.
 
