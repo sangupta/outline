@@ -24,7 +24,6 @@ Some examples are listed below.
 Following items are still need to be implemented to attain feature parity with `airline`:
 
 * Generate help guides
-* Single command interface - would be good if we can support it without any special coding conventions
 * Allow collecting all available commands using reflection
 * support for system properties
 * support for reading configuration from file
@@ -32,14 +31,15 @@ Following items are still need to be implemented to attain feature parity with `
 
 ## Features
 
-Features that are not available in `airline`:
+Outline supports all features that are supported in `airline` and more as:
 
 * Support for splitting end arguments based on index into individual attributes
 * Ability to define command groups using annotation
 
 Common feature set:
 
-
+* Annotation based definition of commands, options and arguments
+* Meta-data driven 
 
 ## Usage Examples
 

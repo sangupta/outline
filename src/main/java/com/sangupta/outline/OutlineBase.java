@@ -56,6 +56,10 @@ public abstract class OutlineBase {
     }
     
     OutlineBase(Class<?> singleCommandClass) {
+    	if(singleCommandClass == null) {
+    		throw new IllegalArgumentException("Single command-class cannot be null");
+    	}
+    	
         Command command = singleCommandClass.getAnnotation(Command.class);
         if(command == null) {
             throw new IllegalArgumentException("Command must be annotated with @Command annotation");
