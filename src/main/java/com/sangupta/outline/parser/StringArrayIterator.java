@@ -36,6 +36,11 @@ class StringArrayIterator implements Iterator<String> {
     public int getPosition() {
     	return this.position;
     }
+    
+    @Override
+    public void remove() {
+    	throw new UnsupportedOperationException("Remove is not supported on StringArray iteration");
+    }
 
     @Override
     public boolean hasNext() {
