@@ -10,7 +10,7 @@ public class SingleCommandTest {
     
     public static void main(String[] args) {
     	args = new String[] { "help" };
-        PingCommand ping = new Outline(PingCommand.class).parse(args, PingCommand.class);
+        PingCommand ping = new Outline(PingCommand.class).parse(args);
         ping.helpCommand.showHelp();
     }
 

@@ -74,13 +74,14 @@ public class Outline extends OutlineBase {
         return this;
     }
     
-    public Object parse(String[] args) {
-        return OutlineParser.parse(this, args);
-    }
-    
-    public <T> T parse(String[] args, Class<T> classOfT) {
-    	Object instance = OutlineParser.parse(this, args);
-        return classOfT.cast(instance);
+    @SuppressWarnings("unchecked")
+	public <T> T parse(String[] args) {
+        Object instance = OutlineParser.parse(this, args);
+        if(this.singleCommandMode) {
+        	return (T) this.defaultCommand.cast(instance);
+        }
+        
+        return (T) instance;
     }
     
     @Override
