@@ -6,7 +6,7 @@ import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.help.OutlineHelp;
 
 @Command(name = "ping", description = "Ping networks")
-class PingCommandForTest {
+public class PingCommandForTest {
 	
 	@Inject
 	public OutlineHelp helpCommand;
