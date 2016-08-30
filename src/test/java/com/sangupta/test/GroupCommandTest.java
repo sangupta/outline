@@ -32,6 +32,42 @@ public class GroupCommandTest {
 	    Assert.assertEquals(null, result.command);
 	    Assert.assertEquals("remote", result.group);
 	}
+	
+	@Test
+	public void testGroupInvalidCommand() {
+		Outline outline = MultiCommandSupport.getOutline();
+		
+		String[] args = "help sangupta".split(" ");
+		Object instance = outline.parse(args);
+		
+		Assert.assertNotNull(instance);
+	    Assert.assertTrue(instance instanceof OutlineHelp);
+	    
+	    OutlineHelp help = (OutlineHelp) instance;
+	    ParseResult result = help.getResult();
+	    Assert.assertNotNull(result);
+	    
+	    Assert.assertEquals("sangupta", result.command);
+	    Assert.assertEquals(null, result.group);
+	}
+	
+	@Test
+	public void testGroupCorrectGroupInvalidCommand() {
+		Outline outline = MultiCommandSupport.getOutline();
+		
+		String[] args = "help remote sangupta".split(" ");
+		Object instance = outline.parse(args);
+		
+		Assert.assertNotNull(instance);
+	    Assert.assertTrue(instance instanceof OutlineHelp);
+	    
+	    OutlineHelp help = (OutlineHelp) instance;
+	    ParseResult result = help.getResult();
+	    Assert.assertNotNull(result);
+	    
+	    Assert.assertEquals("sangupta", result.command);
+	    Assert.assertEquals("remote", result.group);
+	}
 
 	@Test
 	public void testGroupWithCommand() {
