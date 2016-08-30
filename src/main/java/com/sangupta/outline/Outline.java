@@ -21,7 +21,9 @@
  
 package com.sangupta.outline;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,6 +53,35 @@ public class Outline extends OutlineBase {
      */
     public static <T> void registerTypeConverter(Class<T> classOfT, OutlineTypeConverter<T> converter) {
         OutlineBinder.registerTypeConverter(classOfT, converter);
+    }
+    
+    /**
+     * Register global converters that help us throughout.
+     * 
+     */
+    static {
+    	Outline.registerTypeConverter(String[].class, new OutlineTypeConverter<String[]>() {
+
+            @Override
+            public String[] convertFrom(Field field, Object instance, Object value) {
+                if(value == null) {
+                    return null;
+                }
+                
+                if(value instanceof List<?>) {
+                    List<?> list = (List<?>) value;
+                    String[] array = new String[list.size()];
+                    for(int index = 0; index < array.length; index++) {
+                        array[index] = list.get(index).toString();
+                    }
+                    
+                    return array;
+                }
+                
+                return new String[] { value.toString() };
+            }
+            
+        });
     }
     
     /**

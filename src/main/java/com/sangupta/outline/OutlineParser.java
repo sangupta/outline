@@ -75,18 +75,15 @@ public class OutlineParser {
         // start reading the options and making sure that we know where the command break-point is
         ParseResult result = ArgumentParser.parse(args, metadata);
         
-        if(result.command == null) {
+        if(!result.helpRequested && result.command == null) {
             throw new RuntimeException("command not specified");
         }
         
-        // check if we are requesting help
-        boolean isHelpRequested = result.command.equals(outline.helpKeyword);
-        
         // create the help command
-    	final OutlineHelp helpCommand = new OutlineHelp(metadata, result, isHelpRequested);
+    	final OutlineHelp helpCommand = new OutlineHelp(metadata, result);
     	
     	// if help has been requested, return the help command or the instance with help injected
-        if(isHelpRequested) {
+        if(result.helpRequested) {
         	if(metadata.singleCommandMode) {
         		// this is single command mode
         		// we need to throw back the command instance back that has an injection of the OutlineHelpCommand property

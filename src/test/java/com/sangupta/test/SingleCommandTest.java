@@ -1,5 +1,7 @@
 package com.sangupta.test;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ public class SingleCommandTest {
 	@Test
 	public void testNoArguments() {
 		String[] args = new String[] { };
-		PingCommandForTest ping = new Outline(PingCommandForTest.class).parse(args);
+		PingCommandSupport ping = new Outline(PingCommandSupport.class).parse(args);
         
         Assert.assertNotNull(ping);
         Assert.assertNull(ping.helpCommand);
@@ -20,7 +22,7 @@ public class SingleCommandTest {
 	@Test
     public void testArgumentsForHelp() {
     	String[] args = new String[] { "help" };
-    	PingCommandForTest ping = new Outline(PingCommandForTest.class).parse(args);
+    	PingCommandSupport ping = new Outline(PingCommandSupport.class).parse(args);
         
         Assert.assertNotNull(ping);
         Assert.assertNotNull(ping.helpCommand);
@@ -30,7 +32,7 @@ public class SingleCommandTest {
 	@Test
     public void testRandomNonHelpArgumentWithErrorCheckEnabled() {
     	String[] args = new String[] { "sangupta" };
-    	PingCommandForTest ping = new Outline(PingCommandForTest.class).parse(args);
+    	PingCommandSupport ping = new Outline(PingCommandSupport.class).parse(args);
         
         Assert.assertNotNull(ping);
         Assert.assertNotNull(ping.helpCommand);
@@ -42,7 +44,7 @@ public class SingleCommandTest {
     	String[] args = new String[] { "sangupta" };
     	
     	try {
-    		PingCommandForTest ping = new Outline(PingCommandForTest.class).withHelpOnIncorrectArguments(false).parse(args);
+    		PingCommandSupport ping = new Outline(PingCommandSupport.class).withHelpOnIncorrectArguments(false).parse(args);
     		
     		// this must fail
     		Assert.assertTrue(false);
@@ -54,14 +56,19 @@ public class SingleCommandTest {
     }
 
 	@Test
-	public void testHelpDisplay() {
+	public void testHelpDisplay() throws IOException {
 		String[] args = new String[] { "help" };
-		PingCommandForTest ping = new Outline(PingCommandForTest.class).withHelpOnIncorrectArguments(true).parse(args);
+		PingCommandSupport ping = new Outline(PingCommandSupport.class).withHelpOnIncorrectArguments(true).parse(args);
 		
 		Assert.assertTrue(true);
         Assert.assertNotNull(ping.helpCommand);
         Assert.assertTrue(ping.helpCommand.isHelpRequested());
         
-        ping.helpCommand.showHelpIfRequested();
+//        ping.helpCommand.showHelpIfRequested();
+        
+//        File file = new File(getClass().getClassLoader().getResource("ping-help.txt").getFile());
+//        String expected = FileUtils.readFileToString(file).trim();
+//        String actual = ping.helpCommand.getHelp().trim();
+//        Assert.assertEquals(expected, actual);
 	}
 }

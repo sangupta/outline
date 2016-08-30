@@ -19,6 +19,16 @@ more-powerful than `airline`.
 The codebase is now sane and it can be used to parse almost all Git-like command-structures.
 Some examples are listed below.
 
+## Tasks left
+
+* Show argument usage examples in help
+* Show arguments usage examples in help
+* Honor hidden command
+* Honor required/hidden/allowedValues in help for option
+* cache argument metadata in outline metadata
+* Set result.command to actual command name in single command mode
+
+
 ## TODO
 
 Following items are still need to be implemented to attain feature parity with `airline`:

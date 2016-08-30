@@ -32,6 +32,8 @@ public class ParseResult {
     
     public String command;
     
+    public boolean helpRequested;
+    
     public final SimpleMultiMap<String, String> globalOptions = new SimpleMultiMap<>();
     
     public final SimpleMultiMap<String, String> groupOptions = new SimpleMultiMap<>();

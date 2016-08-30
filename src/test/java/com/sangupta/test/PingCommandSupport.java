@@ -10,7 +10,7 @@ import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.help.OutlineHelp;
 
 @Command(name = "ping", description = "Ping networks")
-public class PingCommandForTest {
+public class PingCommandSupport {
 	
 	@Inject
 	public OutlineHelp helpCommand;

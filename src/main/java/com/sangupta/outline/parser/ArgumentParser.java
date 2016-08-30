@@ -76,8 +76,36 @@ public class ArgumentParser {
         
         String name = iterator.peek();
         if(!metadata.commandNames.containsKey(name)) {
+        	// check if this is help required
+        	if(name.equals(metadata.helpKeyword)) {
+            	name = iterator.next();
+            	
+        		result.helpRequested = true;
+        		
+        		// check if we have more values
+        		if(!iterator.hasNext()) {
+        			return;
+        		}
+        		String commandOrGroup = iterator.next();
+        		if(metadata.commandGroups.containsKey(commandOrGroup)) {
+        			// this is group name
+        			result.group = commandOrGroup;
+        			
+        			// let's check if we also have a command name
+        			if(!iterator.hasNext()) {
+        				return;
+        			}
+        			
+        			result.command = iterator.next();
+        			return;
+        		}
+        		
+        		result.command = commandOrGroup;
+        		return;
+        	}
+        	
         	if(metadata.helpOnIncorrectArguments) {
-        		result.command = metadata.helpKeyword;
+        		result.helpRequested = true;
         		return;
         	}
         	
@@ -135,7 +163,7 @@ public class ArgumentParser {
             String token = iterator.peek();
             
             if(!options.containsKey(token)) {
-                break;
+                return;
             }
             
             // we found the option
@@ -160,7 +188,7 @@ public class ArgumentParser {
             String token = iterator.peek();
             
             if(!metadata.globalOptions.containsKey(token)) {
-                break;
+                return;
             }
             
             // we found the option

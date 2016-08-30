@@ -56,12 +56,11 @@ public class OutlineHelp {
 	 * 
 	 * @param metadata
 	 * @param result
-	 * @param helpRequested
 	 */
-    public OutlineHelp(OutlineMetadata metadata, ParseResult result, boolean helpRequested) {
+    public OutlineHelp(OutlineMetadata metadata, ParseResult result) {
         this.meta = metadata;
         this.result = result;
-        this.helpRequested = helpRequested;
+        this.helpRequested = result.helpRequested;
     }
 
     /**
@@ -87,6 +86,10 @@ public class OutlineHelp {
     	
     	return false;
     }
+    
+    public String getHelp() {
+    	return new OutlineHelpBuilder(meta, result).getHelpText();
+    }
 
     /**
      * Show the help on console: <code>System.out</code>, even if it has not been requested.
@@ -109,5 +112,19 @@ public class OutlineHelp {
     	
     	stream.println(new OutlineHelpBuilder(meta, result).getHelpText());
     }
+
+	/**
+	 * @return the meta
+	 */
+	public OutlineMetadata getMeta() {
+		return meta;
+	}
+
+	/**
+	 * @return the result
+	 */
+	public ParseResult getResult() {
+		return result;
+	}
     
 }

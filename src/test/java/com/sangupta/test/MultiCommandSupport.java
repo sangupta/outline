@@ -21,53 +21,17 @@
  
 package com.sangupta.test;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.sangupta.outline.Outline;
-import com.sangupta.outline.OutlineTypeConverter;
 import com.sangupta.outline.annotations.Argument;
 import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
-import com.sangupta.outline.help.OutlineHelp;
 
-public class IntegrationTest {
+public class MultiCommandSupport {
 	
-	@BeforeClass
-	public static void beforeTests() {
-        Outline.registerTypeConverter(String[].class, new OutlineTypeConverter<String[]>() {
-
-            @Override
-            public String[] convertFrom(Field field, Object instance, Object value) {
-                if(value == null) {
-                    return null;
-                }
-                
-                if(value instanceof List<?>) {
-                    List<?> list = (List<?>) value;
-                    String[] array = new String[list.size()];
-                    for(int index = 0; index < array.length; index++) {
-                        array[index] = list.get(index).toString();
-                    }
-                    
-                    return array;
-                }
-                
-                return new String[] { value.toString() };
-            }
-            
-        });
-	}
-	
-	@Test
-    public void testMultiCommand() {
+	public static Outline getOutline() {
         Outline outline = new Outline("git")
                                     .withDescription("the powerful SCM tool")
                                     .withDefaultCommand(AddCommand.class)
@@ -81,42 +45,8 @@ public class IntegrationTest {
                .withDescription("some stupid group")
                .withCommands(GroupAddCommand.class, GroupRemoveCommand.class);
         
-
-        
-        // test that the instance is perfectly populated
-        String[] args = new String[] { "" };
-        Object instance = outline.parse(args);
-        
-        Assert.assertNotNull(instance);
-        Assert.assertTrue(instance instanceof OutlineHelp);
-        
-        // test for a specific command
-        args = "-g1 op1 -g2 op2 op3 remote -gr1 op4 -gr2 op5 op6 radd -c1 op7 -c2 op8 op9 arg1 arg2 arg3 arg4".split(" ");
-        instance = outline.parse(args);
-        
-        Assert.assertNotNull(instance);
-        Assert.assertTrue(instance instanceof RemoteAddCommand);
-        RemoteAddCommand command = (RemoteAddCommand) instance;
-        Assert.assertEquals(command.g1, "op1");
-        Assert.assertArrayEquals(command.g2, new String[] { "op2", "op3" });
-        Assert.assertEquals(command.gr1, "op4");
-        Assert.assertArrayEquals(command.gr2, new String[] { "op5", "op6" });
-        Assert.assertEquals(command.c1, "op7");
-        Assert.assertArrayEquals(command.c2, new String[] { "op8", "op9" });
-        Assert.assertEquals(command.a1, "arg1");
-        Assert.assertEquals(command.a2, "arg2");
-        Assert.assertArrayEquals(command.a3, new String[] { "arg3", "arg4" });
-        
-        // test for the help mode
-        args = new String[] { "help" };
-        instance = outline.parse(args);
-        
-        Assert.assertNotNull(instance);
-        Assert.assertTrue(instance instanceof OutlineHelp);
-        ((OutlineHelp) instance).showHelp();
-    }
-	
-	// All supporting classes ahead
+        return outline;
+	}
     
     public static abstract class GlobalCommand {
     	
@@ -151,7 +81,7 @@ public class IntegrationTest {
         
     }
     
-    @Command(group = "remote", name = "radd", description = "remote add global command")
+    @Command(group = "remote", name = "remote-add", description = "remote add global command")
     public static class RemoteAddCommand extends RemoteCommand {
         
         @Option(name = "-c1")
@@ -171,7 +101,7 @@ public class IntegrationTest {
         
     }
     
-    @Command(group = "remote", name = "remove", description = "remote remove global command")
+    @Command(group = "remote", name = "remote-remove", description = "remote remove global command")
     public static class RemoteRemoveCommand extends RemoteCommand {
         
     }
