@@ -72,17 +72,17 @@ public class OutlineHelpBuilder {
         
         lines.add(this.meta.name + ": " + this.meta.description);
         lines.add(null);
+        
         lines.add("Usage:");
         lines.add(getUsageLine(command, group));
         lines.add(null);
 
-        if(this.meta.singleCommandMode) {
-	        lines.add(getCommandsSection(command, group));
-	        lines.add(null);
-        }
-        
         lines.addAll(getOptionsSection(command, group));
         lines.add(null);
+
+        lines.addAll(getCommandsSection(command, group));
+        lines.add(null);
+        
         lines.addAll(getArgumentsSection(command, group));
         
         return lines;
@@ -95,9 +95,37 @@ public class OutlineHelpBuilder {
      * @param group
      * @return
      */
-    private String getCommandsSection(String command, String group) {
-		// TODO Auto-generated method stub
-		return null;
+    private List<String> getCommandsSection(String command, String group) {
+    	List<String> lines = new ArrayList<>();
+    	
+    	if(this.meta.singleCommandMode) {
+    		// not applicable for single command mode
+    		return lines;
+    	}
+
+    	lines.add("Available commands:");
+    	lines.add(null);
+    	
+    	Collection<Command> commands;
+    	if(AssertUtils.isEmpty(group)) {
+    		commands = this.meta.commandNames.values();
+    	} else {
+    		commands = this.meta.commandGroups.getValues(group);
+    	}
+    	
+        Set<Command> commandSet = new HashSet<>(commands);
+        for(Command item : commandSet) {
+        	if(item == null) {
+    			// this happens because of the help keyword
+        		continue;
+        	}
+        	
+            lines.add("\t" + item.name());
+            lines.add("\t\t" + item.description());
+            lines.add(null);
+        }
+
+		return lines;
 	}
 
 	/**
@@ -183,7 +211,7 @@ public class OutlineHelpBuilder {
         lines.add(null);
         
         // add all global options
-        lines.addAll(buildForOptions(this.meta.globalOptions));
+        lines.addAll(buildSectionForOptions(this.meta.globalOptions));
         
         // build for group options - only if needed
         if(!this.meta.commandGroups.isEmpty()) {
@@ -193,9 +221,9 @@ public class OutlineHelpBuilder {
         // add all command options
         if(this.result.command != null) {
         	if(this.meta.singleCommandMode) {
-        		lines.addAll(buildForOptions(this.meta.commandOptions.values().iterator().next()));
+        		lines.addAll(buildSectionForOptions(this.meta.commandOptions.values().iterator().next()));
         	} else {
-        		lines.addAll(buildForOptions(this.meta.commandOptions.get(this.result.command)));
+        		lines.addAll(buildSectionForOptions(this.meta.commandOptions.get(this.result.command)));
         	}
         }
         
@@ -208,7 +236,7 @@ public class OutlineHelpBuilder {
      * @param options
      * @return
      */
-    private List<String> buildForOptions(Map<String, Option> optionMap) {
+    private List<String> buildSectionForOptions(Map<String, Option> optionMap) {
         List<String> lines = new ArrayList<>();
         
         if(AssertUtils.isEmpty(optionMap)) {
@@ -265,27 +293,34 @@ public class OutlineHelpBuilder {
      */
 	private void getArgumentSectionInUsage(final String command, StringBuilder builder) {
 		List<Object> arguments = this.meta.commandArguments.getValues(command);
-		if(AssertUtils.isNotEmpty(arguments)) {
-			int count = 1;
-			for(Object obj : arguments) {
-				// iterate over them
-				if(obj instanceof Argument) {
-					Argument arg = (Argument) obj;
+		
+		if(AssertUtils.isEmpty(arguments)) {
+			if(!this.meta.singleCommandMode) {
+				builder.append(" <args>");
+			}
 
-					builder.append(' ');
-					builder.append('<');
-					builder.append(nonEmpty(arg.title(), "arg" + count++));
-					builder.append('>');
-				}
-				
-				if(obj instanceof Arguments) {
-					Arguments args = (Arguments) obj;
-	
-					builder.append(' ');
-					builder.append('<');
-					builder.append(nonEmpty(args.title(), "arguments"));
-					builder.append('>');
-				}
+			return;
+		}
+		
+		int count = 1;
+		for(Object obj : arguments) {
+			// iterate over them
+			if(obj instanceof Argument) {
+				Argument arg = (Argument) obj;
+
+				builder.append(' ');
+				builder.append('<');
+				builder.append(nonEmpty(arg.title(), "arg" + count++));
+				builder.append('>');
+			}
+			
+			if(obj instanceof Arguments) {
+				Arguments args = (Arguments) obj;
+
+				builder.append(' ');
+				builder.append('<');
+				builder.append(nonEmpty(args.title(), "arguments"));
+				builder.append('>');
 			}
 		}
 	}
@@ -336,33 +371,4 @@ public class OutlineHelpBuilder {
     	}
 	}
 
-    /**
-     * Return information on all available commands - this could be list of all
-     * commands at global level, or at group level
-     * 
-     * @return
-     */
-	private List<String> getCommands() {
-		List<String> lines = new ArrayList<>();
-		
-        lines.add("Available commands:");
-        lines.add(null);
-        
-        if(AssertUtils.isNotEmpty(this.meta.commandNames)) {
-        	Set<Command> commands = new HashSet<>(this.meta.commandNames.values());
-        	for(Command command : commands) {
-        		if(command == null) {
-        			// this happens because of the help keyword
-        			continue;
-        		}
-        		
-                lines.add("\t" + command.name());
-                lines.add("\t\t" + command.description());
-                lines.add(null);
-        	}
-        }
-		
-		return lines;
-	}
-	
 }
