@@ -3,14 +3,14 @@ package com.sangupta.outline;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.outline.MultiCommandSupport.RemoteAddCommand;
+import com.sangupta.outline.OutlineTestSupport.RemoteAddCommand;
 import com.sangupta.outline.help.OutlineHelp;
 
 public class MultiCommandBasicTest {
 
 	@Test
 	public void testBasics() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		// test that the instance is perfectly populated
 	    String[] args = new String[] { "" };
@@ -47,7 +47,7 @@ public class MultiCommandBasicTest {
 	
 	@Test
 	public void testMultiCommandForGroup() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		// test that the instance is perfectly populated
 		String[] args = new String[] { "" };

@@ -29,7 +29,7 @@ import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
 
-public class MultiCommandSupport {
+public class OutlineTestSupport {
 	
 	public static Outline getOutline() {
         Outline outline = new Outline("git")

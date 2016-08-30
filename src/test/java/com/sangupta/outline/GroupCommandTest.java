@@ -17,7 +17,7 @@ public class GroupCommandTest {
 
 	@Test
 	public void testGroupNoCommand() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		String[] args = "help remote".split(" ");
 		Object instance = outline.parse(args);
@@ -35,7 +35,7 @@ public class GroupCommandTest {
 	
 	@Test
 	public void testGroupInvalidCommand() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		String[] args = "help sangupta".split(" ");
 		Object instance = outline.parse(args);
@@ -53,7 +53,7 @@ public class GroupCommandTest {
 	
 	@Test
 	public void testGroupCorrectGroupInvalidCommand() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		String[] args = "help remote sangupta".split(" ");
 		Object instance = outline.parse(args);
@@ -71,7 +71,7 @@ public class GroupCommandTest {
 
 	@Test
 	public void testGroupWithCommand() {
-		Outline outline = MultiCommandSupport.getOutline();
+		Outline outline = OutlineTestSupport.getOutline();
 		
 		String[] args = "help remote radd".split(" ");
 		Object instance = outline.parse(args);
