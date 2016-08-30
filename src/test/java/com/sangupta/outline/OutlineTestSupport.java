@@ -39,6 +39,7 @@ public class OutlineTestSupport {
                                     .withCommandFactory(new DefaultCommandFactory())
                                     .withCommands(AddCommand.class, ResetCommand.class)
                                     .withCommands(RemoteAddCommand.class, RemoteRemoveCommand.class)
+                                    .withCommands(AllOptionCommand.class)
                                     .withHelpOnIncorrectArguments(true);
         
         outline.withGroup("mygroup")
@@ -59,6 +60,65 @@ public class OutlineTestSupport {
         @Option(name = { "-g2", "--global2" }, description = "This is some description for the global2 flag", type = OptionType.GLOBAL, arity = 2)
         protected String[] g2;
         
+    }
+    
+    @Command(name = "population-check", description = "all types of options are specified here, including required attributes and allowed values")
+    public static class AllOptionCommand {
+    	
+    	@Option(name = "-bo", description = "primitive boolean")
+    	public boolean bool;
+
+    	@Option(name = "-bo2", description = "primitive boolean")
+    	public Boolean bool2;
+
+    	@Option(name = "-i", description = "primitive integer")
+    	public int integer;
+    	
+    	@Option(name = "-d", description = "primitive double")
+    	public double dbl;
+    	
+    	@Option(name = "-f", description = "primitive float")
+    	public float flt;
+    	
+    	@Option(name = "-l", description = "primitive long")
+    	public long lng;
+    	
+    	@Option(name = "-short", description = "primitive short")
+    	public short shrt;
+    	
+    	@Option(name = "-b", description = "primitive byte")
+    	public byte bite;
+    	
+    	@Option(name = "-c", description = "primitive char")
+    	public char chr;
+    	
+    	@Option(name = "-s", description = "String")
+    	public String strng;
+    	
+    	@Option(name = "-i2", description = "object integer")
+    	public Integer integer2;
+    	
+    	@Option(name = "-d2", description = "object double")
+    	public Double dbl2;
+    	
+    	@Option(name = "-f2", description = "object float")
+    	public Float flt2;
+    	
+    	@Option(name = "-l2", description = "object long")
+    	public Long lng2;
+    	
+    	@Option(name = "-short2", description = "object short")
+    	public Short shrt2;
+    	
+    	@Option(name = "-b2", description = "object bite")
+    	public Byte bite2;
+    	
+    	@Option(name = "-c2", description = "object char")
+    	public Character chr2;
+    	
+    	@Option(name = "-stringArray", description = "string array", arity = 5)
+    	public String[] multiString;
+    	
     }
 
     @Command(name = "add", description = "add command")

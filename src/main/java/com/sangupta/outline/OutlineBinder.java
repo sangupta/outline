@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sangupta.jerry.ds.SimpleMultiMap;
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.jerry.util.ReflectionUtils;
@@ -45,6 +48,8 @@ import com.sangupta.outline.util.OutlineUtil;
  *
  */
 class OutlineBinder {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OutlineBinder.class);
     
     final static Map<Class<?>, OutlineTypeConverter<?>> converters = new HashMap<>();
     
@@ -181,7 +186,7 @@ class OutlineBinder {
         try {
             ReflectionUtils.bindValue(field, instance, value);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to set field value via reflection", e);
         }
     }
 

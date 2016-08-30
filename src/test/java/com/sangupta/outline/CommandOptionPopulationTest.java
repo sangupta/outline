@@ -3,10 +3,11 @@ package com.sangupta.outline;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.sangupta.outline.OutlineTestSupport.AllOptionCommand;
 import com.sangupta.outline.OutlineTestSupport.RemoteAddCommand;
 import com.sangupta.outline.help.OutlineHelp;
 
-public class MultiCommandBasicTest {
+public class CommandOptionPopulationTest {
 
 	@Test
 	public void testBasics() {
@@ -42,7 +43,46 @@ public class MultiCommandBasicTest {
 	    
 	    Assert.assertNotNull(instance);
 	    Assert.assertTrue(instance instanceof OutlineHelp);
-//	    ((OutlineHelp) instance).showHelp();
+	}
+	
+	@Test
+	public void testOptionPopulation() {
+		Outline outline = OutlineTestSupport.getOutline();
+		String[] args = "population-check -bo true -bo2 true -i 23 -i2 46 -d 29.94 -d2 49.94 -f 67.67 -f2 69.69 -l 123 -l2 1234 -short 12 -short2 24 -b 54 -b2 108 -c a -c2 x -s hello -stringArray sa1 sa2 sa3 sa4 sa5".split(" ");
+		Object instance = outline.parse(args);
+
+		Assert.assertNotNull(instance);
+	    Assert.assertTrue(instance instanceof AllOptionCommand);
+	    
+	    AllOptionCommand aoc = (AllOptionCommand) instance;
+	    
+	    Assert.assertTrue(aoc.bool);
+	    Assert.assertEquals(new Boolean(true), aoc.bool2);
+	    
+	    Assert.assertEquals(23, aoc.integer);
+	    Assert.assertEquals(new Integer(46), aoc.integer2);
+	    
+	    Assert.assertEquals(29.94d, aoc.dbl, 0.0d);
+	    Assert.assertEquals(new Double(49.94d), aoc.dbl2);
+	    
+	    Assert.assertEquals(67.67f, aoc.flt, 0.0f);
+	    Assert.assertEquals(new Float(69.69), aoc.flt2);
+	    
+	    Assert.assertEquals(123l, aoc.lng);
+	    Assert.assertEquals(new Long(1234l), aoc.lng2);
+	    
+	    Assert.assertEquals(12, aoc.shrt);
+	    Assert.assertEquals(new Short((short) 24), aoc.shrt2);
+	    
+	    Assert.assertEquals(54, aoc.bite);
+	    Assert.assertEquals(new Byte((byte) 108), aoc.bite2);
+	    
+	    Assert.assertEquals('a', aoc.chr);
+	    Assert.assertEquals(new Character('x'), aoc.chr2);
+	    
+	    Assert.assertEquals("hello", aoc.strng);
+	    
+	    Assert.assertArrayEquals("sa1 sa2 sa3 sa4 sa5".split(" "), aoc.multiString);
 	}
 	
 	@Test
@@ -62,7 +102,6 @@ public class MultiCommandBasicTest {
 		
 		Assert.assertNotNull(instance);
 	    Assert.assertTrue(instance instanceof OutlineHelp);
-//	    ((OutlineHelp) instance).showHelp();
 	}
 
 }
