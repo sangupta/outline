@@ -1,9 +1,12 @@
 package com.sangupta.outline;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +20,55 @@ import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
 import com.sangupta.outline.util.OutlineUtil;
 
+/**
+ * Functions that read all the metadata from classes via annotations and otherwise
+ * and make sure that we have all the required information to start processing.
+ * 
+ * @author sangupta
+ *
+ */
 public class OutlineMetadataReader {
 	
 	/**
      * My private logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(OutlineMetadataReader.class);
+
+    public static final Comparator<Object> ARGUMENTS_SORTER = new Comparator<Object>() {
+		
+		@Override
+		public int compare(Object o1, Object o2) {
+			if(!isValidType(o1) || !isValidType(o2)) {
+				throw new IllegalArgumentException("The collection should only have Argument/Arguments");
+			}
+			
+			if(o1 instanceof Arguments) {
+				return 1;
+			}
+			
+			if(o2 instanceof Arguments) {
+				return -1;
+			}
+			
+			Argument a1 = (Argument) o1;
+			Argument a2 = (Argument) o2;
+			
+			return Integer.compare(a1.order(), a2.order()); 
+		}
+		
+		private boolean isValidType(Object obj) {
+			if(obj instanceof Argument) {
+				return true;
+			}
+			
+			if(obj instanceof Arguments) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+	};
 
 	/**
      * Read the {@link Outline} and generate the {@link OutlineMetadata} that contains
@@ -44,8 +90,24 @@ public class OutlineMetadataReader {
             readCommandData(commandClass, outline, metadata);
         }
         
+        // sort arguments
+        sortCommandArguments(metadata);
+        
         return metadata;
     }
+
+
+
+	private static void sortCommandArguments(OutlineMetadata metadata) {
+		if(!metadata.commandArguments.isEmpty()) {
+            Set<String> keys = metadata.commandArguments.keySet();
+            for(String key : keys) {
+            	List<Object> arguments = metadata.commandArguments.getValues(key);
+            	Collections.sort(arguments, ARGUMENTS_SORTER);
+            }
+        	
+        }
+	}
     
 
 
@@ -84,8 +146,6 @@ public class OutlineMetadataReader {
         readFieldData(commandClass, metadata, commandName, group);
 	}
 	
-
-
 	private static void readFieldData(Class<?> commandClass, OutlineMetadata metadata, final String commandName, String group) {
 		// read options from within the commandClass
         List<Field> fields = OutlineUtil.getAllFields(commandClass);
@@ -103,8 +163,14 @@ public class OutlineMetadataReader {
 
 	private static OptionType readFieldData(OutlineMetadata metadata, final String commandName, String group, Field field) {
 		// check if command accepts arguments or not
-		if(field.isAnnotationPresent(Argument.class) || field.isAnnotationPresent(Arguments.class)) {
-			metadata.commandHasArguments.put(commandName, true);
+		Argument argument = field.getAnnotation(Argument.class);
+		if(argument != null) {
+			metadata.commandArguments.put(commandName, argument);
+		}
+		
+		Arguments arguments = field.getAnnotation(Arguments.class);
+		if(arguments != null) {
+			metadata.commandArguments.put(commandName, arguments);
 		}
 		
 		// check if field is annotated with @Option annotation
@@ -158,6 +224,7 @@ public class OutlineMetadataReader {
 		    default:
 		        throw new IllegalStateException("Unkown option type detected: " + type.toString());
 		}
+		
 		return type;
 	}
 }

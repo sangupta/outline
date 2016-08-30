@@ -22,7 +22,6 @@
 package com.sangupta.outline;
 
 import java.lang.reflect.Field;
-import java.util.Comparator;
 
 import javax.inject.Inject;
 
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.jerry.util.ReflectionUtils;
-import com.sangupta.outline.annotations.Argument;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.ArgumentParser;
@@ -52,15 +50,6 @@ public class OutlineParser {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(OutlineParser.class);
     
-    public static final Comparator<Argument> ARGUMENTS_SORTER = new Comparator<Argument>() {
-		
-		@Override
-		public int compare(Argument o1, Argument o2) {
-			return Integer.compare(o1.order(), o2.order()); 
-		}
-		
-	};
-
     /**
      * Parse the command line arguments against the given {@link Outline} object
      * and return the {@link Command} instance that the user had requested execution for.
@@ -75,9 +64,11 @@ public class OutlineParser {
         
         if(args.length == 0) {
             if(outline.defaultCommand == null) {
+            	LOGGER.debug("No arguments specified, no default command, return null");
                 return null;
             }
             
+            LOGGER.debug("No arguments specified, return default command: {}", outline.defaultCommand);
             return outline.commandFactory.createInstance(outline.defaultCommand);
         }
         

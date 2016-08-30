@@ -53,10 +53,10 @@ public class OutlineMetadata {
     public final Map<String, Class<?>> commandClasses = new HashMap<>();
     
     /**
-     * Mapping between each command and whether it has arguments specified or not
+     * Mapping between each command and all its arguments that are applicable.
      * 
      */
-    public final Map<String, Boolean> commandHasArguments = new HashMap<>();
+    public final SimpleMultiMap<String, Object> commandArguments = new SimpleMultiMap<>();
     
     /**
      * Mapping between each command name and the {@link Command} object
