@@ -30,6 +30,12 @@ public class OutlineHelpBuilder {
      */
     protected final ParseResult result;
 
+    /**
+     * Construct an instance of {@link OutlineHelpBuilder}.
+     * 
+     * @param meta
+     * @param result
+     */
     public OutlineHelpBuilder(OutlineMetadata meta, ParseResult result) {
     	this.meta = meta;
     	this.result = result;
@@ -51,41 +57,50 @@ public class OutlineHelpBuilder {
      * @return
      */
     public List<String> getHelpLines() {
+    	final String command;
+    	final String group;
+    	
         if(this.meta.singleCommandMode) {
-            return showSingleCommandHelp();
+        	command = this.meta.commandClasses.keySet().iterator().next();
+            group = null;
+        } else {
+        	command = this.result.command;
+        	group = this.result.group;
         }
         
-        if(result.arguments.isEmpty()) {
-            return showHelpSummary();
-        }
-        
-        return showCommandHelp();
-    }
-
-    /**
-     * Show help for a single command mode.
-     * 
-     * @return
-     */
-    private List<String> showSingleCommandHelp() {
         List<String> lines = new ArrayList<>();
-        
-        final String command = this.meta.commandNames.keySet().iterator().next();
-        final String group = null;
         
         lines.add(this.meta.name + ": " + this.meta.description);
         lines.add(null);
         lines.add("Usage:");
         lines.add(getUsageLine(command, group));
         lines.add(null);
+
+        if(this.meta.singleCommandMode) {
+	        lines.add(getCommandsSection(command, group));
+	        lines.add(null);
+        }
+        
         lines.addAll(getOptionsSection(command, group));
         lines.add(null);
         lines.addAll(getArgumentsSection(command, group));
         
         return lines;
     }
-    
+
     /**
+     * Show all commands that are applicable.
+     * 
+     * @param command
+     * @param group
+     * @return
+     */
+    private String getCommandsSection(String command, String group) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
      * Create the help lines for applicable arguments to the command.
      * 
      * @return
@@ -226,7 +241,62 @@ public class OutlineHelpBuilder {
     	builder.append(' ');
     	
     	// all global options must be shown here
-    	if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
+    	getOptionSectionInUsage(builder);
+    	
+    	// then we show the command
+    	// this is only applicable for multi-command mode
+    	if(!this.meta.singleCommandMode) {
+    		builder.append(" <command>");
+    	}
+    	
+    	// and lastly we need to display the arguments that can be passed
+    	// this needs to be displayed, only if there are arguments that can be applied
+    	// to a command
+    	getArgumentSectionInUsage(command, builder);
+		
+    	return builder.toString();
+    }
+
+    /**
+     * Build the arguments section in the usage line.
+     * 
+     * @param command
+     * @param builder
+     */
+	private void getArgumentSectionInUsage(final String command, StringBuilder builder) {
+		List<Object> arguments = this.meta.commandArguments.getValues(command);
+		if(AssertUtils.isNotEmpty(arguments)) {
+			int count = 1;
+			for(Object obj : arguments) {
+				// iterate over them
+				if(obj instanceof Argument) {
+					Argument arg = (Argument) obj;
+
+					builder.append(' ');
+					builder.append('<');
+					builder.append(nonEmpty(arg.title(), "arg" + count++));
+					builder.append('>');
+				}
+				
+				if(obj instanceof Arguments) {
+					Arguments args = (Arguments) obj;
+	
+					builder.append(' ');
+					builder.append('<');
+					builder.append(nonEmpty(args.title(), "arguments"));
+					builder.append('>');
+				}
+			}
+		}
+	}
+
+	/**
+	 * Build the options section in the usage line.
+	 * 
+	 * @param builder
+	 */
+	private void getOptionSectionInUsage(StringBuilder builder) {
+		if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
     		boolean first = true;
     		
     		// show one for each of the param
@@ -239,6 +309,7 @@ public class OutlineHelpBuilder {
     			if(names.length > 1) {
     				builder.append('(');
     			}
+    			
     			for(String name : names) {
     				if(!first) {
     					builder.append(" | ");
@@ -247,80 +318,23 @@ public class OutlineHelpBuilder {
     				first = false;
     				builder.append(name);
     			}
+    			
     			if(names.length > 1) {
     				builder.append(')');
     			}
 
     			for(int index = 0; index < option.arity(); index++) {
     				if(option.arity() == 1) {
-    					builder.append(" <arg>");
+    					builder.append(" <option-arg>");
     				} else {
-    					builder.append(" <arg" + (index + 1) + ">");
+    					builder.append(" <option-arg" + (index + 1) + ">");
     				}
     			}
     			
     			builder.append(']');
     		}
     	}
-    	
-    	// then we show the command
-    	// this is only applicable for multi-command mode
-    	if(!this.meta.singleCommandMode) {
-    		builder.append(" <command>");
-    	}
-    	
-    	// and lastly we need to display the arguments that can be passed
-    	// this needs to be displayed, only if there are arguments that can be applied
-    	// to a command
-    	if(this.meta.singleCommandMode) {
-    		builder.append(" [<args>]");
-    	} else {
-    		if(AssertUtils.isEmpty(this.result.group)) {
-    			// group is not applicable - this is for all commands within the eco-system
-    			if(!this.meta.commandArguments.isEmpty()) {
-    				builder.append(" [<args>]");
-    			}
-    		} else {
-    			// group is applicable
-    			List<Command> commands = this.meta.commandGroups.getValues(this.result.group);
-    			
-    		}
-    	}
-    	
-    	return builder.toString();
-    }
-
-    /**
-     * Show help for a specific command or group.
-     * 
-     * @return
-     */
-    private List<String> showCommandHelp() {
-        return null;
-    }
-
-    /**
-     * Show help summary for multi-command mode.
-     * 
-     * @return
-     */
-    private List<String> showHelpSummary() {
-    	List<String> lines = new ArrayList<>();
-        
-    	final String command = this.result.command;
-    	final String group = this.result.group;
-    	
-        lines.add(this.meta.name + ": " + this.meta.description);
-        lines.add(null);
-        lines.add("Usage:");
-        lines.add(getUsageLine(command, group));
-        lines.add(null);
-        lines.addAll(getOptionsSection(command, group));
-        lines.add(null);
-        lines.addAll(getCommands());
-        
-        return lines;
-    }
+	}
 
     /**
      * Return information on all available commands - this could be list of all
