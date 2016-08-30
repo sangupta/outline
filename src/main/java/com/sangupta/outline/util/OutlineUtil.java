@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.Outline;
 
 /**
@@ -60,11 +61,16 @@ public class OutlineUtil {
     }
 
     public static String join(String[] str, String joiner) {
-        StringBuilder builder = new StringBuilder();
+    	if(AssertUtils.isEmpty(str)) {
+    		return "";
+    	}
+    	
+    	StringBuilder builder = new StringBuilder();
         
+    	final boolean hasJoiner = AssertUtils.isNotEmpty(joiner);
         boolean first = true;
         for(String s : str) {
-            if(!first) {
+            if(hasJoiner && !first) {
                 builder.append(joiner);
             }
             
