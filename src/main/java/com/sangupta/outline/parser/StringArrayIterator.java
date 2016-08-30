@@ -44,6 +44,10 @@ class StringArrayIterator implements Iterator<String> {
 
     @Override
     public boolean hasNext() {
+    	if(items == null) {
+    		return false;
+    	}
+    	
         if(position < items.length) {
             return true;
         }
