@@ -10,10 +10,12 @@ public class StringArrayIteratorTest {
 		StringArrayIterator iterator = new StringArrayIterator(null);
 		Assert.assertNotNull(iterator);
 		Assert.assertFalse(iterator.hasNext());
-
+		Assert.assertNull(iterator.peek());
+		
 		iterator = new StringArrayIterator(new String[] { });
 		Assert.assertNotNull(iterator);
 		Assert.assertFalse(iterator.hasNext());
+		Assert.assertNull(iterator.peek());
 		
 		iterator = new StringArrayIterator(new String[] { "hello" });
 		Assert.assertNotNull(iterator);
@@ -24,6 +26,7 @@ public class StringArrayIteratorTest {
 		Assert.assertTrue(iterator.hasNext());
 		Assert.assertEquals("hello", iterator.next());
 		Assert.assertFalse(iterator.hasNext());
+		Assert.assertNull(iterator.peek());
 		
 		iterator = new StringArrayIterator(new String[] { "hello", "world" });
 		Assert.assertNotNull(iterator);
@@ -36,6 +39,7 @@ public class StringArrayIteratorTest {
 		Assert.assertTrue(iterator.hasNext());
 		Assert.assertEquals("world", iterator.next());
 		Assert.assertFalse(iterator.hasNext());
+		Assert.assertNull(iterator.peek());
 		
 		iterator = new StringArrayIterator(new String[] { "hello", "world" });
 		try {
