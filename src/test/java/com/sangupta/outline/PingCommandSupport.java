@@ -1,4 +1,4 @@
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import javax.inject.Inject;
 

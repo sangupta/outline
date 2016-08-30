@@ -19,7 +19,7 @@
  * 
  */
  
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.annotations.Argument;

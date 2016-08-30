@@ -1,11 +1,10 @@
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.outline.Outline;
+import com.sangupta.outline.MultiCommandSupport.RemoteAddCommand;
 import com.sangupta.outline.help.OutlineHelp;
-import com.sangupta.test.MultiCommandSupport.RemoteAddCommand;
 
 public class MultiCommandBasicTest {
 

@@ -1,4 +1,4 @@
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import java.io.IOException;
 

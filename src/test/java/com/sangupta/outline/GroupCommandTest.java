@@ -1,4 +1,4 @@
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import org.junit.Assert;
 import org.junit.Test;

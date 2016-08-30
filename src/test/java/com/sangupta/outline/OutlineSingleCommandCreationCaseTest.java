@@ -1,4 +1,4 @@
-package com.sangupta.test;
+package com.sangupta.outline;
 
 import javax.inject.Inject;
 
@@ -13,7 +13,7 @@ import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
 import com.sangupta.outline.help.OutlineHelp;
 
-public class OutlineSingleCommandCreationCases {
+public class OutlineSingleCommandCreationCaseTest {
 	
 	@Test
 	public void testExceptions() {
