@@ -120,6 +120,11 @@ public class OutlineHelpBuilder {
         		continue;
         	}
         	
+        	if(item.hidden()) {
+        		// command is hidden
+        		continue;
+        	}
+        	
             lines.add("\t" + item.name());
             lines.add("\t\t" + item.description());
             lines.add(null);
