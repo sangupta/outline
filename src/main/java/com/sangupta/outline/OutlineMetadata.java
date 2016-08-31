@@ -81,6 +81,13 @@ public class OutlineMetadata {
      */
     public final Map<String, Map<String, Option>> commandOptions = new HashMap<>();
     
+    /**
+     * Mapping between the option annotation and the class type for the field its put on.
+     * This way we know that option applies to boolean, or to int, or to double and so on.
+     * 
+     */
+    public final Map<Option, Class<?>> optionFieldType = new HashMap<>();
+    
     OutlineMetadata(Outline outline) {
         this.name = outline.name;
         this.description = outline.description;

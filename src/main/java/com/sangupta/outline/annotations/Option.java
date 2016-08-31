@@ -51,6 +51,13 @@ public @interface Option {
      * A description of this option.
      */
     String description() default "";
+    
+    /**
+     * Whether to show type information in help text or not.
+     * 
+     * @return
+     */
+    boolean showTypeInfo() default true;
 
     /**
      * Whether this option is required.

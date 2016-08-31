@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.outline.Outline;
 import com.sangupta.outline.exceptions.InvalidOutlineArgumentException;
 
 public class SingleCommandTest {
@@ -70,5 +69,11 @@ public class SingleCommandTest {
 //        String expected = FileUtils.readFileToString(file).trim();
 //        String actual = ping.helpCommand.getHelp().trim();
 //        Assert.assertEquals(expected, actual);
+	}
+	
+	public static void main(String[] args) {
+		args = new String[] { "help" };
+		PingCommandSupport ping = new Outline(PingCommandSupport.class).withHelpOnIncorrectArguments(true).parse(args);
+		ping.helpCommand.showHelpIfRequested();
 	}
 }

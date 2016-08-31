@@ -102,8 +102,6 @@ public class OutlineMetadataReader {
         	
         }
 	}
-    
-
 
 	private static void readCommandData(Class<?> commandClass, Outline outline, OutlineMetadata metadata) {
 		Command command = commandClass.getAnnotation(Command.class);
@@ -172,6 +170,9 @@ public class OutlineMetadataReader {
 		if(option == null) {
 		    return null;
 		}
+		
+		// add field type so that information can be displayed in help text
+		metadata.optionFieldType.put(option, field.getType());
 		
 		// the field is an argument - read it
 		OptionType type = option.type();

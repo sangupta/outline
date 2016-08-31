@@ -216,7 +216,7 @@ public class OutlineHelpBuilder {
         lines.add(null);
         
         // add all global options
-        lines.addAll(buildSectionForOptions(this.meta.globalOptions));
+        lines.addAll(buildOptionsSectionForData(this.meta.globalOptions));
         
         // build for group options - only if needed
         if(!this.meta.commandGroups.isEmpty()) {
@@ -226,9 +226,9 @@ public class OutlineHelpBuilder {
         // add all command options
         if(this.result.command != null) {
         	if(this.meta.singleCommandMode) {
-        		lines.addAll(buildSectionForOptions(this.meta.commandOptions.values().iterator().next()));
+        		lines.addAll(buildOptionsSectionForData(this.meta.commandOptions.values().iterator().next()));
         	} else {
-        		lines.addAll(buildSectionForOptions(this.meta.commandOptions.get(this.result.command)));
+        		lines.addAll(buildOptionsSectionForData(this.meta.commandOptions.get(this.result.command)));
         	}
         }
         
@@ -241,7 +241,7 @@ public class OutlineHelpBuilder {
      * @param options
      * @return
      */
-    private List<String> buildSectionForOptions(Map<String, Option> optionMap) {
+    private List<String> buildOptionsSectionForData(Map<String, Option> optionMap) {
         List<String> lines = new ArrayList<>();
         
         if(AssertUtils.isEmpty(optionMap)) {
@@ -252,16 +252,48 @@ public class OutlineHelpBuilder {
         
         Set<Option> options = new HashSet<>(optionsCollection);
         for(Option option : options) {
+        	if(option.hidden()) {
+        		// skip hidden options
+        		continue;
+        	}
+        	
             String[] names = option.name();
             lines.add("\t" + OutlineUtil.join(names, ", "));
-            lines.add("\t\t" + option.description());
+            lines.add("\t\t" + getOptionHelp(option));
             lines.add(null);
         }
         
         return lines;
     }
+    
+    private String getOptionHelp(Option option) {
+    	StringBuilder builder = new StringBuilder(1024);
+    	
+    	if(option.required()) {
+    		builder.append("Required. ");
+    	}
+    	
+    	builder.append(option.description());
+    	if(!option.description().endsWith(".")) {
+    		builder.append(". ");
+    	}
+    	
+    	if(option.arity() > 0) {
+	        Class<?> optionClass = this.meta.optionFieldType.get(option);
+	        builder.append("Expects argument of type: ");
+	        builder.append(optionClass.getSimpleName());
+	        builder.append(". ");
+    	}
+    	
+    	if(AssertUtils.isNotEmpty(option.allowedValues())) {
+    		builder.append("Allowed values: ");
+    		builder.append(OutlineUtil.join(option.allowedValues(), ", "));
+    	}
+    	
+    	return builder.toString();
+    }
 
-    /**
+	/**
      * Construct the usage line.
      * 
      * @return
@@ -342,6 +374,11 @@ public class OutlineHelpBuilder {
     		// show one for each of the param
     		Set<Option> options = new HashSet<>(this.meta.globalOptions.values());
     		for(Option option : options) {
+    			if(option.hidden()) {
+    				// skip hidden option
+    				continue;
+    			}
+    			
     			String[] names = option.name();
     			builder.append(" [");
     			

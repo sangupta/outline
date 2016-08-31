@@ -23,10 +23,6 @@ Some examples are listed below.
 
 * Show argument usage examples in help
 * Show arguments usage examples in help
-* Honor required/hidden/allowedValues in help for option
-* cache argument metadata in outline metadata
-* Set result.command to actual command name in single command mode
-
 
 ## TODO
 
