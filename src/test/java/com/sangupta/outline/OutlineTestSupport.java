@@ -144,19 +144,19 @@ public class OutlineTestSupport {
     @Command(group = "remote", name = "remote-add", description = "remote add global command")
     public static class RemoteAddCommand extends RemoteCommand {
         
-        @Option(name = "-c1")
+        @Option(name = "-c1", description = "command specific option 1")
         protected String c1;
         
-        @Option(name = "-c2", arity = 2)
+        @Option(name = "-c2", arity = 2, description = "command specific option 2")
         protected String[] c2;
         
-        @Argument(order = 0)
+        @Argument(order = 0, description = "the first argument", required = true, title = "file")
         protected String a1;
 
-        @Argument(order = 1)
+        @Argument(order = 1, description = "the second argument")
         protected String a2;
         
-        @Arguments
+        @Arguments(description = "all other arguments")
         protected String[] a3;
         
     }

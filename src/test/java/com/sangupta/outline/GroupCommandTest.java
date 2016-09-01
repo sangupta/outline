@@ -86,4 +86,13 @@ public class GroupCommandTest {
 	    Assert.assertEquals("radd", result.command);
 	    Assert.assertEquals("remote", result.group);
 	}
+	
+	public static void main(String[] args) {
+		Outline outline = OutlineTestSupport.getOutline();
+		
+		args = "help remote remote-add".split(" ");
+		Object instance = outline.parse(args);
+		
+		((OutlineHelp) instance).showHelpIfRequested();
+	}
 }

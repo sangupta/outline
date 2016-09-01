@@ -130,17 +130,6 @@ public class OutlineHelpBuilder {
      * @return
      */
     private void getArgumentsSection(final IndentedStringWriter writer, final String command, final String group) {
-    	writer.writeLine("Available arguments:");
-		buildArgumentsForCommand(writer, command, group);
-    }
-
-    /**
-     * Create the list of all arguments that are applicable to this particular command.
-     * 
-     * @param class1
-     * @return
-     */
-    private void buildArgumentsForCommand(final IndentedStringWriter writer, final String command, final String group) {
     	if(AssertUtils.isEmpty(command)) {
     		return;
     	}
@@ -150,6 +139,8 @@ public class OutlineHelpBuilder {
 			return;
 		}
 		
+    	writer.writeLine("Available arguments:");
+    	
 		int count = 1;
 		for(Object obj : arguments) {
 			// iterate over them
@@ -160,6 +151,9 @@ public class OutlineHelpBuilder {
 				writer.writeLine("<" + nonEmpty(arg.title(), "arg" + count++) + ">");
 				writer.setIndentLevel(2);
 				writer.writeLine(arg.description());
+				if(arg.required()) {
+					writer.writeLine("Required.");
+				}
 			}
 			
 			if(obj instanceof Arguments) {
@@ -246,13 +240,23 @@ public class OutlineHelpBuilder {
     }
     
     private void getOptionHelp(IndentedStringWriter writer, Option option) {
-    	writer.write(option.description());
-    	if(!option.description().endsWith(".")) {
-    		writer.write(".");
+    	boolean descriptionAvailable = AssertUtils.isNotEmpty(option.description());
+    	if(descriptionAvailable) {
+	    	writer.write(option.description());
+	    	if(!option.description().endsWith(".")) {
+	    		writer.write(".");
+	    	}
     	}
     	
-    	writer.newLine();
-    	writer.newLine();
+    	boolean hasOptionDetails = option.required() || option.arity() > 0 || AssertUtils.isNotEmpty(option.allowedValues());
+    	if(!hasOptionDetails) {
+    		return;
+    	}
+
+    	if(descriptionAvailable) {
+	    	writer.newLine();
+	    	writer.newLine();
+    	}
     	
     	if(option.required()) {
     		writer.write("Required. ");
@@ -303,14 +307,20 @@ public class OutlineHelpBuilder {
     	
 		// group
 		if(AssertUtils.isNotEmpty(group)) {
-			Set<Option> options = new HashSet<>(this.meta.groupOptions.get(group).values());
-			buildOptionsSectionInUsage(writer, options);
+			Map<String, Option> map = this.meta.groupOptions.get(group);
+			if(AssertUtils.isNotEmpty(map)) {
+				Set<Option> options = new HashSet<>(map.values());
+				buildOptionsSectionInUsage(writer, options);
+			}
 		}
 		
 		// command options
 		if(AssertUtils.isNotEmpty(command)) {
-			Set<Option> options = new HashSet<>(this.meta.commandOptions.get(command).values());
-			buildOptionsSectionInUsage(writer, options);
+			Map<String, Option> map = this.meta.commandOptions.get(command);
+			if(AssertUtils.isNotEmpty(map)) {
+				Set<Option> options = new HashSet<>(map.values());
+				buildOptionsSectionInUsage(writer, options);
+			}
 		}
 		
     	// and lastly we need to display the arguments that can be passed
