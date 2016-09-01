@@ -157,6 +157,10 @@ public class OutlineHelpBuilder {
     private List<String> buildArgumentsForCommand(final String command, final String group) {
 		List<String> lines = new ArrayList<>();
 		
+    	if(AssertUtils.isEmpty(command)) {
+    		return lines;
+    	}
+    	
 		List<Object> arguments = this.meta.commandArguments.getValues(command);
 		if(AssertUtils.isEmpty(arguments)) {
 			return lines;
@@ -329,6 +333,10 @@ public class OutlineHelpBuilder {
      * @param builder
      */
 	private void getArgumentSectionInUsage(final String command, StringBuilder builder) {
+		if(AssertUtils.isEmpty(command)) {
+			return;
+		}
+		
 		List<Object> arguments = this.meta.commandArguments.getValues(command);
 		
 		if(AssertUtils.isEmpty(arguments)) {

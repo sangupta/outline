@@ -63,13 +63,18 @@ public class OutlineParser {
         OutlineMetadata metadata = OutlineMetadataReader.getMetadata(outline);
         
         if(args.length == 0) {
-            if(outline.defaultCommand == null) {
-            	LOGGER.debug("No arguments specified, no default command, return null");
-                return null;
-            }
-            
-            LOGGER.debug("No arguments specified, return default command: {}", outline.defaultCommand);
-            return outline.commandFactory.createInstance(outline.defaultCommand);
+        	if(outline.helpOnIncorrectArguments) {
+        		// we need help
+        		args = new String[] { outline.helpKeyword };
+        	} else {
+	            if(outline.defaultCommand == null) {
+	            	LOGGER.debug("No arguments specified, no default command, return null");
+	                return null;
+	            }
+	            
+	            LOGGER.debug("No arguments specified, return default command: {}", outline.defaultCommand);
+	            return outline.commandFactory.createInstance(outline.defaultCommand);
+        	}
         }
         
         // start reading the options and making sure that we know where the command break-point is
