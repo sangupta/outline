@@ -277,13 +277,13 @@ public class OutlineHelpBuilder {
     private String getOptionHelp(Option option) {
     	StringBuilder builder = new StringBuilder(1024);
     	
-    	if(option.required()) {
-    		builder.append("Required. ");
-    	}
-    	
     	builder.append(option.description());
     	if(!option.description().endsWith(".")) {
     		builder.append(". ");
+    	}
+    	
+    	if(option.required()) {
+    		builder.append(" Required. ");
     	}
     	
     	if(option.arity() > 0) {
@@ -365,7 +365,7 @@ public class OutlineHelpBuilder {
 		List<Object> arguments = this.meta.commandArguments.getValues(command);
 		
 		if(AssertUtils.isEmpty(arguments)) {
-			if(!this.meta.singleCommandMode) {
+			if(!this.meta.singleCommandMode && AssertUtils.isEmpty(command)) {
 				builder.append(" <args>");
 			}
 
