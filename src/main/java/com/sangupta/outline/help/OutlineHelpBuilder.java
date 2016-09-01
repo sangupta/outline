@@ -1,6 +1,5 @@
 package com.sangupta.outline.help;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +46,8 @@ public class OutlineHelpBuilder {
      * @return
      */
     public String getHelpText() {
-        List<String> helpLines = getHelpLines();
-        return HelpFormatter.format(helpLines);
+        IndentedStringWriter writer = getHelpLines();
+        return writer.toString();
     }
     
     /**
@@ -56,36 +55,28 @@ public class OutlineHelpBuilder {
      * 
      * @return
      */
-    public List<String> getHelpLines() {
-    	final String command;
-    	final String group;
+    public IndentedStringWriter getHelpLines() {
+    	final IndentedStringWriter writer = new IndentedStringWriter();
     	
-        if(this.meta.singleCommandMode) {
-        	command = this.meta.commandClasses.keySet().iterator().next();
-            group = null;
-        } else {
-        	command = this.result.command;
-        	group = this.result.group;
-        }
+    	final String command = this.result.command;
+    	final String group = this.result.group;
         
-        List<String> lines = new ArrayList<>();
+        writer.writeLine(this.meta.name + ": " + this.meta.description);
+        writer.newLine();
         
-        lines.add(this.meta.name + ": " + this.meta.description);
-        lines.add(null);
-        
-        lines.add("Usage:");
-        lines.add(getUsageLine(command, group));
-        lines.add(null);
+        writer.writeLine("Usage:");
+        getUsageLine(writer, command, group);
+        writer.newLine();
 
-        lines.addAll(getOptionsSection(command, group));
-        lines.add(null);
+        getOptionsSection(writer, command, group);
+        writer.newLine();
 
-        lines.addAll(getCommandsSection(command, group));
-        lines.add(null);
+        getCommandsSection(writer, command, group);
+        writer.newLine();
         
-        lines.addAll(getArgumentsSection(command, group));
+        getArgumentsSection(writer, command, group);
         
-        return lines;
+        return writer;
     }
 
     /**
@@ -95,20 +86,17 @@ public class OutlineHelpBuilder {
      * @param group
      * @return
      */
-    private List<String> getCommandsSection(String command, String group) {
-    	List<String> lines = new ArrayList<>();
-    	
+    private void getCommandsSection(final IndentedStringWriter writer, final String command, final String group) {
     	if(this.meta.singleCommandMode) {
     		// not applicable for single command mode
-    		return lines;
+    		return;
     	}
     	
     	if(AssertUtils.isNotEmpty(command)) {
-    		return lines;
+    		return;
     	}
 
-    	lines.add("Available commands:");
-    	lines.add(null);
+    	writer.writeLine("Available commands:");
     	
     	Collection<Command> commands;
     	if(AssertUtils.isEmpty(group)) {
@@ -129,12 +117,11 @@ public class OutlineHelpBuilder {
         		continue;
         	}
         	
-            lines.add("\t" + item.name());
-            lines.add("\t\t" + item.description());
-            lines.add(null);
+        	writer.setIndentLevel(1);
+            writer.write(item.name());
+            writer.setIndentLevel(1);
+            writer.writeLine(item.description());
         }
-
-		return lines;
 	}
 
 	/**
@@ -142,14 +129,9 @@ public class OutlineHelpBuilder {
      * 
      * @return
      */
-    private List<String> getArgumentsSection(final String command, final String group) {
-    	List<String> lines = new ArrayList<>();
-
-    	lines.add("Available arguments:");
-    	lines.add(null);
-		lines.addAll(buildArgumentsForCommand(command, group));
-
-		return lines;
+    private void getArgumentsSection(final IndentedStringWriter writer, final String command, final String group) {
+    	writer.writeLine("Available arguments:");
+		buildArgumentsForCommand(writer, command, group);
     }
 
     /**
@@ -158,16 +140,14 @@ public class OutlineHelpBuilder {
      * @param class1
      * @return
      */
-    private List<String> buildArgumentsForCommand(final String command, final String group) {
-		List<String> lines = new ArrayList<>();
-		
+    private void buildArgumentsForCommand(final IndentedStringWriter writer, final String command, final String group) {
     	if(AssertUtils.isEmpty(command)) {
-    		return lines;
+    		return;
     	}
     	
 		List<Object> arguments = this.meta.commandArguments.getValues(command);
 		if(AssertUtils.isEmpty(arguments)) {
-			return lines;
+			return;
 		}
 		
 		int count = 1;
@@ -176,21 +156,23 @@ public class OutlineHelpBuilder {
 			if(obj instanceof Argument) {
 				Argument arg = (Argument) obj;
 				
-				lines.add("\t<" + nonEmpty(arg.title(), "arg" + count++) + ">");
-				lines.add("\t\t" + arg.description());
-				lines.add(null);
+				writer.setIndentLevel(1);
+				writer.writeLine("<" + nonEmpty(arg.title(), "arg" + count++) + ">");
+				writer.setIndentLevel(2);
+				writer.writeLine(arg.description());
 			}
 			
 			if(obj instanceof Arguments) {
 				Arguments args = (Arguments) obj;
 
-				lines.add("\t<" + nonEmpty(args.title(), "arguments") + ">");
-				lines.add("\t\t" + args.description());
-				lines.add(null);
+				writer.setIndentLevel(1);
+				writer.writeLine("<" + nonEmpty(args.title(), "arguments") + ">");
+				writer.setIndentLevel(2);
+				writer.writeLine(args.description());
 			}
 		}
 		
-		return lines;
+		writer.setIndentLevel(0);
 	}
     
     /**
@@ -213,18 +195,15 @@ public class OutlineHelpBuilder {
      * 
      * @return
      */
-    private List<String> getOptionsSection(final String command, final String group) {
-        List<String> lines = new ArrayList<>();
-        
+    private void getOptionsSection(final IndentedStringWriter writer, final String command, final String group) {
         if(this.meta.globalOptions.isEmpty() && this.meta.commandOptions.isEmpty()) {
-        	return lines;
+        	return;
         }
         
-        lines.add("Available options:");
-        lines.add(null);
+        writer.writeLine("Available options:");
         
         // add all global options
-        lines.addAll(buildOptionsSectionForData(this.meta.globalOptions));
+        buildOptionsSectionForData(writer, this.meta.globalOptions);
         
         // build for group options - only if needed
         if(!this.meta.commandGroups.isEmpty()) {
@@ -232,15 +211,9 @@ public class OutlineHelpBuilder {
         }
         
         // add all command options
-        if(this.result.command != null) {
-        	if(this.meta.singleCommandMode) {
-        		lines.addAll(buildOptionsSectionForData(this.meta.commandOptions.values().iterator().next()));
-        	} else {
-        		lines.addAll(buildOptionsSectionForData(this.meta.commandOptions.get(this.result.command)));
-        	}
+        if(AssertUtils.isNotEmpty(this.result.command)) {
+    		buildOptionsSectionForData(writer, this.meta.commandOptions.values().iterator().next());
         }
-        
-        return lines;
     }
 
     /**
@@ -249,11 +222,9 @@ public class OutlineHelpBuilder {
      * @param options
      * @return
      */
-    private List<String> buildOptionsSectionForData(Map<String, Option> optionMap) {
-        List<String> lines = new ArrayList<>();
-        
+    private void buildOptionsSectionForData(final IndentedStringWriter writer, final Map<String, Option> optionMap) {
         if(AssertUtils.isEmpty(optionMap)) {
-        	return lines;
+        	return;
         }
 
         Collection<Option> optionsCollection = optionMap.values();
@@ -266,39 +237,35 @@ public class OutlineHelpBuilder {
         	}
         	
             String[] names = option.name();
-            lines.add("\t" + OutlineUtil.join(names, ", "));
-            lines.add("\t\t" + getOptionHelp(option));
-            lines.add(null);
+            writer.setIndentLevel(1);
+            writer.writeLine(OutlineUtil.join(names, ", "));
+            writer.setIndentLevel(2);
+            getOptionHelp(writer, option);
+            writer.setIndentLevel(0);
         }
-        
-        return lines;
     }
     
-    private String getOptionHelp(Option option) {
-    	StringBuilder builder = new StringBuilder(1024);
-    	
-    	builder.append(option.description());
+    private void getOptionHelp(IndentedStringWriter writer, Option option) {
+    	writer.write(option.description());
     	if(!option.description().endsWith(".")) {
-    		builder.append(". ");
+    		writer.write(". ");
     	}
     	
     	if(option.required()) {
-    		builder.append(" Required. ");
+    		writer.write(" Required. ");
     	}
     	
     	if(option.arity() > 0) {
 	        Class<?> optionClass = this.meta.optionFieldType.get(option);
-	        builder.append("Expects argument of type: ");
-	        builder.append(optionClass.getSimpleName());
-	        builder.append(". ");
+	        writer.write("Expects argument of type: ");
+	        writer.write(optionClass.getSimpleName());
+	        writer.write(". ");
     	}
     	
     	if(AssertUtils.isNotEmpty(option.allowedValues())) {
-    		builder.append("Allowed values: ");
-    		builder.append(OutlineUtil.join(option.allowedValues(), ", "));
+    		writer.write("Allowed values: ");
+    		writer.write(OutlineUtil.join(option.allowedValues(), ", "));
     	}
-    	
-    	return builder.toString();
     }
 
 	/**
@@ -306,49 +273,50 @@ public class OutlineHelpBuilder {
      * 
      * @return
      */
-    private String getUsageLine(final String command, final String group) {
-    	StringBuilder builder = new StringBuilder(1024);
+    private void getUsageLine(final IndentedStringWriter writer, final String command, final String group) {
+    	writer.setIndentLevel(1);
     	
-    	builder.append('\t');
-    	builder.append(this.meta.name);
-    	builder.append(' ');
+    	writer.write("$ ");
+    	writer.write(this.meta.name);
+    	writer.write(' ');
     	
     	// all global options must be shown here
 		// global
 		if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
 			Set<Option> options = new HashSet<>(this.meta.globalOptions.values());
-    		buildOptionsSectionInUsage(builder, options);
+    		buildOptionsSectionInUsage(writer, options);
     	}
 		
     	// then we show the command
     	// this is only applicable for multi-command mode
     	if(!this.meta.singleCommandMode) {
     		if(AssertUtils.isNotEmpty(command)) {
-    			builder.append(' ');
-    			builder.append(command);
+    			writer.write(' ');
+    			writer.write(command);
     		} else {
-    			builder.append(" <command>");
+    			writer.write(" <command>");
     		}
     	}
     	
 		// group
 		if(AssertUtils.isNotEmpty(group)) {
 			Set<Option> options = new HashSet<>(this.meta.groupOptions.get(group).values());
-			buildOptionsSectionInUsage(builder, options);
+			buildOptionsSectionInUsage(writer, options);
 		}
 		
 		// command options
 		if(AssertUtils.isNotEmpty(command)) {
 			Set<Option> options = new HashSet<>(this.meta.commandOptions.get(command).values());
-			buildOptionsSectionInUsage(builder, options);
+			buildOptionsSectionInUsage(writer, options);
 		}
 		
     	// and lastly we need to display the arguments that can be passed
     	// this needs to be displayed, only if there are arguments that can be applied
     	// to a command
-    	getArgumentSectionInUsage(command, builder);
-		
-    	return builder.toString();
+    	getArgumentSectionInUsage(command, writer);
+    	
+    	// reset indentation
+    	writer.setIndentLevel(0);
     }
 
     /**
@@ -357,7 +325,7 @@ public class OutlineHelpBuilder {
      * @param command
      * @param builder
      */
-	private void getArgumentSectionInUsage(final String command, StringBuilder builder) {
+	private void getArgumentSectionInUsage(final String command, final IndentedStringWriter writer) {
 		if(AssertUtils.isEmpty(command)) {
 			return;
 		}
@@ -366,7 +334,7 @@ public class OutlineHelpBuilder {
 		
 		if(AssertUtils.isEmpty(arguments)) {
 			if(!this.meta.singleCommandMode && AssertUtils.isEmpty(command)) {
-				builder.append(" <args>");
+				writer.write(" <args>");
 			}
 
 			return;
@@ -378,24 +346,24 @@ public class OutlineHelpBuilder {
 			if(obj instanceof Argument) {
 				Argument arg = (Argument) obj;
 
-				builder.append(' ');
-				builder.append('<');
-				builder.append(nonEmpty(arg.title(), "arg" + count++));
-				builder.append('>');
+				writer.write(' ');
+				writer.write('<');
+				writer.write(nonEmpty(arg.title(), "arg" + count++));
+				writer.write('>');
 			}
 			
 			if(obj instanceof Arguments) {
 				Arguments args = (Arguments) obj;
 
-				builder.append(' ');
-				builder.append('<');
-				builder.append(nonEmpty(args.title(), "arguments"));
-				builder.append('>');
+				writer.write(' ');
+				writer.write('<');
+				writer.write(nonEmpty(args.title(), "arguments"));
+				writer.write('>');
 			}
 		}
 	}
 
-	private void buildOptionsSectionInUsage(StringBuilder builder, Set<Option> options) {
+	private void buildOptionsSectionInUsage(IndentedStringWriter writer, Set<Option> options) {
 		boolean first = true;
 		
 		// show one for each of the param
@@ -406,35 +374,35 @@ public class OutlineHelpBuilder {
 			}
 			
 			String[] names = option.name();
-			builder.append(" [");
+			writer.write(" [");
 			
 			first = true;
 			if(names.length > 1) {
-				builder.append('(');
+				writer.write('(');
 			}
 			
 			for(String name : names) {
 				if(!first) {
-					builder.append(" | ");
+					writer.write(" | ");
 				}
 				
 				first = false;
-				builder.append(name);
+				writer.write(name);
 			}
 			
 			if(names.length > 1) {
-				builder.append(')');
+				writer.write(')');
 			}
 
 			for(int index = 0; index < option.arity(); index++) {
 				if(option.arity() == 1) {
-					builder.append(" <option-arg>");
+					writer.write(" <option-arg>");
 				} else {
-					builder.append(" <option-arg" + (index + 1) + ">");
+					writer.write(" <option-arg" + (index + 1) + ">");
 				}
 			}
 			
-			builder.append(']');
+			writer.write(']');
 		}
 	}
 

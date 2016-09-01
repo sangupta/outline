@@ -37,7 +37,7 @@ public class IndentedStringWriter {
 	private int currentPointer = 0;
 	
 	public IndentedStringWriter() {
-		this(60); // default line length is 60 chars
+		this(100); // default line length is 60 chars
 	}
 
 	public IndentedStringWriter(int lineLength) {
@@ -46,6 +46,7 @@ public class IndentedStringWriter {
 	
 	public void setIndentLevel(int indentLevel) {
 		this.indentLevel = indentLevel;
+		this.newLine();
 	}
 	
 	public void incrementIndent() {
@@ -56,6 +57,10 @@ public class IndentedStringWriter {
 	public void decrementIndent() {
 		this.indentLevel--;
 		this.newLine();
+	}
+	
+	public void write(char ch) {
+		this.write(String.valueOf(ch));
 	}
 	
 	/**
@@ -93,7 +98,18 @@ public class IndentedStringWriter {
 		this.newLine();
 		
 		// call recursive
-		this.write(OutlineUtil.ltrim(str.substring(breakPoint)));
+		if(breakPoint == 0) {
+			this.builder.append(str);
+			this.currentPointer = str.length();
+			return;
+		}
+		try {
+			this.write(OutlineUtil.ltrim(str.substring(breakPoint)));
+		} catch(StackOverflowError e) {
+			System.out.println("breakpoint: " + breakPoint);
+			System.out.println("string: " + str);
+			System.exit(0);
+		}
 	}
 	
 	/**
@@ -113,6 +129,8 @@ public class IndentedStringWriter {
 	 */
 	public void newLine() {
 		this.builder.append('\n');
+		this.currentPointer = 0;
+		
 		if(this.indentLevel == 0) {
 			return;
 		}
