@@ -314,14 +314,35 @@ public class OutlineHelpBuilder {
     	builder.append(' ');
     	
     	// all global options must be shown here
-    	getOptionSectionInUsage(builder);
-    	
+		// global
+		if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
+			Set<Option> options = new HashSet<>(this.meta.globalOptions.values());
+    		buildOptionsSectionInUsage(builder, options);
+    	}
+		
     	// then we show the command
     	// this is only applicable for multi-command mode
     	if(!this.meta.singleCommandMode) {
-    		builder.append(" <command>");
+    		if(AssertUtils.isNotEmpty(command)) {
+    			builder.append(' ');
+    			builder.append(command);
+    		} else {
+    			builder.append(" <command>");
+    		}
     	}
     	
+		// group
+		if(AssertUtils.isNotEmpty(group)) {
+			Set<Option> options = new HashSet<>(this.meta.groupOptions.get(group).values());
+			buildOptionsSectionInUsage(builder, options);
+		}
+		
+		// command options
+		if(AssertUtils.isNotEmpty(command)) {
+			Set<Option> options = new HashSet<>(this.meta.commandOptions.get(command).values());
+			buildOptionsSectionInUsage(builder, options);
+		}
+		
     	// and lastly we need to display the arguments that can be passed
     	// this needs to be displayed, only if there are arguments that can be applied
     	// to a command
@@ -374,55 +395,47 @@ public class OutlineHelpBuilder {
 		}
 	}
 
-	/**
-	 * Build the options section in the usage line.
-	 * 
-	 * @param builder
-	 */
-	private void getOptionSectionInUsage(StringBuilder builder) {
-		if(AssertUtils.isNotEmpty(this.meta.globalOptions)) {
-    		boolean first = true;
-    		
-    		// show one for each of the param
-    		Set<Option> options = new HashSet<>(this.meta.globalOptions.values());
-    		for(Option option : options) {
-    			if(option.hidden()) {
-    				// skip hidden option
-    				continue;
-    			}
-    			
-    			String[] names = option.name();
-    			builder.append(" [");
-    			
-    			first = true;
-    			if(names.length > 1) {
-    				builder.append('(');
-    			}
-    			
-    			for(String name : names) {
-    				if(!first) {
-    					builder.append(" | ");
-    				}
-    				
-    				first = false;
-    				builder.append(name);
-    			}
-    			
-    			if(names.length > 1) {
-    				builder.append(')');
-    			}
+	private void buildOptionsSectionInUsage(StringBuilder builder, Set<Option> options) {
+		boolean first = true;
+		
+		// show one for each of the param
+		for(Option option : options) {
+			if(option.hidden()) {
+				// skip hidden option
+				continue;
+			}
+			
+			String[] names = option.name();
+			builder.append(" [");
+			
+			first = true;
+			if(names.length > 1) {
+				builder.append('(');
+			}
+			
+			for(String name : names) {
+				if(!first) {
+					builder.append(" | ");
+				}
+				
+				first = false;
+				builder.append(name);
+			}
+			
+			if(names.length > 1) {
+				builder.append(')');
+			}
 
-    			for(int index = 0; index < option.arity(); index++) {
-    				if(option.arity() == 1) {
-    					builder.append(" <option-arg>");
-    				} else {
-    					builder.append(" <option-arg" + (index + 1) + ">");
-    				}
-    			}
-    			
-    			builder.append(']');
-    		}
-    	}
+			for(int index = 0; index < option.arity(); index++) {
+				if(option.arity() == 1) {
+					builder.append(" <option-arg>");
+				} else {
+					builder.append(" <option-arg" + (index + 1) + ">");
+				}
+			}
+			
+			builder.append(']');
+		}
 	}
 
 }
