@@ -248,11 +248,14 @@ public class OutlineHelpBuilder {
     private void getOptionHelp(IndentedStringWriter writer, Option option) {
     	writer.write(option.description());
     	if(!option.description().endsWith(".")) {
-    		writer.write(". ");
+    		writer.write(".");
     	}
     	
+    	writer.newLine();
+    	writer.newLine();
+    	
     	if(option.required()) {
-    		writer.write(" Required. ");
+    		writer.write("Required. ");
     	}
     	
     	if(option.arity() > 0) {

@@ -69,6 +69,17 @@ public class IndentedStringWriter {
 	 * @param str
 	 */
 	public void write(String str) {
+		String[] tokens = str.split("\n");
+		for(int index = 0; index < tokens.length; index++) {
+			if(index > 1) {
+				this.newLine();
+			}
+			
+			this.writeInternal(tokens[index]);
+		}
+	}
+	
+	private void writeInternal(String str) {
 		if(AssertUtils.isEmpty(str)) {
 			return;
 		}
