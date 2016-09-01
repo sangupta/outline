@@ -1,6 +1,6 @@
 package com.sangupta.outline.exceptions;
 
-public class InvalidOutlineArgumentException extends RuntimeException {
+public class OutlineInvalidArgumentException extends RuntimeException {
 
 	/**
 	 * Generated via Eclipse
@@ -11,7 +11,7 @@ public class InvalidOutlineArgumentException extends RuntimeException {
 	
 	public final int positionIndex;
 	
-	public InvalidOutlineArgumentException(String argument, int positionIndex) {
+	public OutlineInvalidArgumentException(String argument, int positionIndex) {
 		this.argument = argument;
 		this.positionIndex = positionIndex;
 	}

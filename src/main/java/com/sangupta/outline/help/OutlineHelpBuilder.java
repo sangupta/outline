@@ -102,6 +102,10 @@ public class OutlineHelpBuilder {
     		// not applicable for single command mode
     		return lines;
     	}
+    	
+    	if(AssertUtils.isNotEmpty(command)) {
+    		return lines;
+    	}
 
     	lines.add("Available commands:");
     	lines.add(null);

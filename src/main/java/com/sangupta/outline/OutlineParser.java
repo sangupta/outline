@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.jerry.util.ReflectionUtils;
 import com.sangupta.outline.annotations.Command;
+import com.sangupta.outline.exceptions.OutlineRequiredOptionMissingException;
 import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.ArgumentParser;
 import com.sangupta.outline.parser.ParseResult;
@@ -113,7 +114,16 @@ public class OutlineParser {
 		injectHelpOptionsIfAvailable(instance, helpCommand);
         
         // bind the object to its available properties
-        OutlineBinder.bindInstanceToProperties(inferredCommand, instance, result);
+		try {
+			OutlineBinder.bindInstanceToProperties(inferredCommand, instance, result);
+		} catch(OutlineRequiredOptionMissingException e) {
+			if(!outline.helpOnIncorrectArguments) {
+				throw e;
+			}
+			
+			result.helpRequested = true;
+			return helpCommand;
+		}
         
         // return the instance
         return instance;
@@ -149,7 +159,7 @@ public class OutlineParser {
 			try {
 				ReflectionUtils.bindValue(field, instance, helpCommand);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				LOGGER.warn("Unable to inject values", e);
 				return;
 			}
 		}

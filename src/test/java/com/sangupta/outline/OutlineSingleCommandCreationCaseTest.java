@@ -10,7 +10,7 @@ import com.sangupta.outline.Outline;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
-import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
+import com.sangupta.outline.exceptions.OutlineInvalidConfigurationException;
 import com.sangupta.outline.help.OutlineHelp;
 
 public class OutlineSingleCommandCreationCaseTest {
@@ -68,7 +68,7 @@ public class OutlineSingleCommandCreationCaseTest {
 			outline = new Outline(PingCommandWithGroupOption.class).parse(StringUtils.EMPTY_STRING_LIST);
 			
 			Assert.assertTrue(false);
-		} catch(InvalidOutlineConfigurationException e) {
+		} catch(OutlineInvalidConfigurationException e) {
 			Assert.assertTrue(true);
 			
 			Assert.assertEquals("ping", e.className);

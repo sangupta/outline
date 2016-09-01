@@ -46,11 +46,6 @@ public class OutlineHelp {
      */
     protected final ParseResult result;
     
-    /**
-     * Indicates whether help been requested
-     */
-	protected final boolean helpRequested;
-
 	/**
 	 * Convenience constructor.
 	 * 
@@ -60,7 +55,6 @@ public class OutlineHelp {
     public OutlineHelp(OutlineMetadata metadata, ParseResult result) {
         this.meta = metadata;
         this.result = result;
-        this.helpRequested = result.helpRequested;
     }
 
     /**
@@ -69,7 +63,7 @@ public class OutlineHelp {
      * @return
      */
     public boolean isHelpRequested() {
-		return helpRequested;
+		return result.helpRequested;
 	}
 
     /**
@@ -79,7 +73,7 @@ public class OutlineHelp {
      * @return
      */
     public boolean showHelpIfRequested() {
-    	if(this.helpRequested) {
+    	if(this.isHelpRequested()) {
     		this.showHelp();
     		return true;
     	}

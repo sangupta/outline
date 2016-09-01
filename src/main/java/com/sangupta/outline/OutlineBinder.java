@@ -37,6 +37,7 @@ import com.sangupta.outline.annotations.Argument;
 import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
+import com.sangupta.outline.exceptions.OutlineRequiredOptionMissingException;
 import com.sangupta.outline.parser.ParseResult;
 import com.sangupta.outline.util.OutlineUtil;
 
@@ -156,7 +157,7 @@ class OutlineBinder {
             }
             
             if(option.required() && AssertUtils.isEmpty(values)) {
-                throw new RuntimeException("Required param not available");
+                throw new OutlineRequiredOptionMissingException(option.name()[0]);
             }
             
             bindValueToField(field, instance, values);

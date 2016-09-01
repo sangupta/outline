@@ -1,6 +1,6 @@
 package com.sangupta.outline.exceptions;
 
-public class InvalidOutlineConfigurationException extends RuntimeException {
+public class OutlineInvalidConfigurationException extends RuntimeException {
 
 	/**
 	 * Generated via Eclipse
@@ -13,7 +13,7 @@ public class InvalidOutlineConfigurationException extends RuntimeException {
 	
 	public final String message;
 	
-	public InvalidOutlineConfigurationException(String className, String field, String message) {
+	public OutlineInvalidConfigurationException(String className, String field, String message) {
 		this.className = className;
 		this.field = field;
 		this.message = message;

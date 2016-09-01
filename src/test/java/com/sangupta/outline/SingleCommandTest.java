@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sangupta.outline.exceptions.InvalidOutlineArgumentException;
+import com.sangupta.outline.exceptions.OutlineInvalidArgumentException;
 
 public class SingleCommandTest {
 	
@@ -15,7 +15,7 @@ public class SingleCommandTest {
 		PingCommandSupport ping = new Outline(PingCommandSupport.class).parse(args);
         
         Assert.assertNotNull(ping);
-        Assert.assertNull(ping.helpCommand);
+        Assert.assertNotNull(ping.helpCommand);
 	}
     
 	@Test
@@ -47,7 +47,7 @@ public class SingleCommandTest {
     		
     		// this must fail
     		Assert.assertTrue(false);
-    	} catch(InvalidOutlineArgumentException e) {
+    	} catch(OutlineInvalidArgumentException e) {
     		Assert.assertTrue(true);
     		Assert.assertEquals("sangupta", e.argument);
     		Assert.assertEquals(0, e.positionIndex);

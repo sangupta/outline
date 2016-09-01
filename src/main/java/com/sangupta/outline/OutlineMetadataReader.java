@@ -17,7 +17,7 @@ import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
-import com.sangupta.outline.exceptions.InvalidOutlineConfigurationException;
+import com.sangupta.outline.exceptions.OutlineInvalidConfigurationException;
 import com.sangupta.outline.util.OutlineUtil;
 
 /**
@@ -198,7 +198,7 @@ public class OutlineMetadataReader {
 		    
 		    case GROUP:
 		    	if(metadata.singleCommandMode) {
-		    		throw new InvalidOutlineConfigurationException(commandName, field.getName(), "Group option specified in single-command mode");
+		    		throw new OutlineInvalidConfigurationException(commandName, field.getName(), "Group option specified in single-command mode");
 		    	}
 		    	
 		        if(group == null) {
