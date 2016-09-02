@@ -84,6 +84,14 @@ public abstract class OutlineBase {
             throw new IllegalStateException("Cannot set default command in single-command mode.");
         }
         
+        if(defaultCommand == null) {
+        	throw new IllegalArgumentException("Default command be null");
+        }
+        
+        if(!defaultCommand.isAnnotationPresent(Command.class)) {
+        	throw new IllegalArgumentException("Default command class is not annotated with @Command");
+        }
+        
         this.defaultCommand = defaultCommand;
         this.commands.add(defaultCommand);
         return this;

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sangupta.outline.Outline;
+import com.sangupta.outline.OutlineTestSupport.RemoteAddCommand;
 import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.OutlineParseResult;
 
@@ -14,6 +15,31 @@ import com.sangupta.outline.parser.OutlineParseResult;
  *
  */
 public class GroupCommandTest {
+	
+	@Test
+	public void testDefaultCommand() {
+		Outline outline = OutlineTestSupport.getOutline();
+		outline.withDefaultCommand(RemoteAddCommand.class);
+		Assert.assertTrue(true); // we reached here
+
+		// second case
+		outline = OutlineTestSupport.getOutline();
+		try {
+			outline.withDefaultCommand(null);
+			Assert.assertTrue(false); 
+		} catch(IllegalArgumentException e) {
+			Assert.assertTrue(true); 			
+		}
+		
+		// third case
+		outline = OutlineTestSupport.getOutline();
+		try {
+			outline.withDefaultCommand(GroupCommandTest.class);
+			Assert.assertTrue(false); 
+		} catch(IllegalArgumentException e) {
+			Assert.assertTrue(true); 			
+		}
+	}
 
 	@Test
 	public void testGroupNoCommand() {

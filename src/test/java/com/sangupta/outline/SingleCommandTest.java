@@ -10,6 +10,16 @@ import com.sangupta.outline.exceptions.OutlineInvalidArgumentException;
 public class SingleCommandTest {
 	
 	@Test
+	public void testWrongSingleCommandClass() {
+		try {
+			new Outline(SingleCommandTest.class);
+			Assert.assertTrue(false);
+		} catch(IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+	
+	@Test
 	public void testNoArguments() {
 		String[] args = new String[] { };
 		PingCommandSupport ping = new Outline(PingCommandSupport.class).parse(args);
@@ -59,16 +69,18 @@ public class SingleCommandTest {
 		String[] args = new String[] { "help" };
 		PingCommandSupport ping = new Outline(PingCommandSupport.class).withHelpOnIncorrectArguments(true).parse(args);
 		
-		Assert.assertTrue(true);
         Assert.assertNotNull(ping.helpCommand);
         Assert.assertTrue(ping.helpCommand.isHelpRequested());
-        
-//        ping.helpCommand.showHelpIfRequested();
-        
-//        File file = new File(getClass().getClassLoader().getResource("ping-help.txt").getFile());
-//        String expected = FileUtils.readFileToString(file).trim();
-//        String actual = ping.helpCommand.getHelp().trim();
-//        Assert.assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testSingleCommandSetDefaultCommand() {
+		try {
+			new Outline(PingCommandSupport.class).withDefaultCommand(SingleCommandTest.class);
+			Assert.assertTrue(false);
+		} catch(IllegalStateException e) {
+			Assert.assertTrue(true);
+		}
 	}
 	
 	public static void main(String[] args) {
