@@ -27,7 +27,7 @@ import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
-import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
+import com.sangupta.outline.cmdfactory.OutlineDefaultCommandFactory;
 
 public class OutlineTestSupport {
 	
@@ -36,7 +36,7 @@ public class OutlineTestSupport {
                                     .withDescription("the powerful SCM tool")
                                     .withDefaultCommand(AddCommand.class)
                                     .withHelpKeyword("help")
-                                    .withCommandFactory(new DefaultCommandFactory())
+                                    .withCommandFactory(new OutlineDefaultCommandFactory())
                                     .withCommands(AddCommand.class, ResetCommand.class)
                                     .withCommands(RemoteAddCommand.class, RemoteRemoveCommand.class)
                                     .withCommands(AllOptionCommand.class)

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sangupta.outline.cmdfactory.CommandFactory;
-import com.sangupta.outline.cmdfactory.DefaultCommandFactory;
+import com.sangupta.outline.cmdfactory.OutlineCommandFactory;
+import com.sangupta.outline.cmdfactory.OutlineDefaultCommandFactory;
 
 /**
  * Entry class for building the outlines of command line tools.
@@ -40,7 +40,7 @@ public class Outline extends OutlineBase {
     
     String helpKeyword = "help";
     
-    CommandFactory commandFactory = new DefaultCommandFactory();
+    OutlineCommandFactory commandFactory = new OutlineDefaultCommandFactory();
     
     final Map<String, OutlineBase> groups = new HashMap<>();
     
@@ -146,7 +146,7 @@ public class Outline extends OutlineBase {
         return this;
     }
     
-    public Outline withCommandFactory(CommandFactory commandFactory) {
+    public Outline withCommandFactory(OutlineCommandFactory commandFactory) {
         this.commandFactory = commandFactory;
         return this;
     }

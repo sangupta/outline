@@ -21,8 +21,23 @@
  
 package com.sangupta.outline.cmdfactory;
 
-public interface CommandFactory {
+/**
+ * Default implementation for the {@link OutlineCommandFactory} that uses reflection
+ * to construct an instance using a no-param default constructor.
+ * 
+ * @author sangupta
+ *
+ */
+public class OutlineDefaultCommandFactory implements OutlineCommandFactory {
 
-    public <T> T createInstance(Class<T> instanceClass);
-    
+    @Override
+    public <T> T createInstance(Class<T> instanceClass) {
+        try {
+            return instanceClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            // TODO: fix this
+            throw new RuntimeException("Unable to instantiate command class", e);
+        }
+    }
+
 }
