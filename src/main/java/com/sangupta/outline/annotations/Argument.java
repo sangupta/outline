@@ -51,11 +51,6 @@ public @interface Argument {
     String description() default "";
 
     /**
-     * Argument usage for help.
-     */
-    String usage() default "";
-
-    /**
      * Whether this arguments are required.
      */
     boolean required() default false;
