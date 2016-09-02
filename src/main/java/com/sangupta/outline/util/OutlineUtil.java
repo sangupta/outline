@@ -81,16 +81,4 @@ public class OutlineUtil {
         return builder.toString();
     }
 
-    public static String ltrim(String s) {
-    	if(AssertUtils.isEmpty(s)) {
-    		return "";
-    	}
-    	
-        int i = 0;
-        while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
-            i++;
-        }
-        return s.substring(i);
-    }
-    
 }

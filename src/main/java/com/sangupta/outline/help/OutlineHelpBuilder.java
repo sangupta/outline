@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sangupta.jerry.io.IndentedStringWriter;
 import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.OutlineMetadata;
