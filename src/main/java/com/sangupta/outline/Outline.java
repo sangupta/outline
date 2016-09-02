@@ -123,11 +123,7 @@ public class Outline extends OutlineBase {
     
     @Override
     public Outline withDefaultCommand(Class<?> defaultCommand) {
-        if(this.singleCommandMode) {
-            throw new IllegalStateException("Cannot set default command in single-command mode.");
-        }
-        
-        this.defaultCommand = defaultCommand;
+        super.withDefaultCommand(defaultCommand);
         return this;
     }
     
