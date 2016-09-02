@@ -21,6 +21,8 @@
  
 package com.sangupta.outline.exceptions;
 
+import com.sangupta.jerry.util.AssertUtils;
+
 public class OutlineRequiredOptionMissingException extends OutlineException {
 
 	/**
@@ -31,6 +33,10 @@ public class OutlineRequiredOptionMissingException extends OutlineException {
 	public final String argument;
 	
 	public OutlineRequiredOptionMissingException(String argument) {
+		if(AssertUtils.isEmpty(argument)) {
+			throw new IllegalArgumentException("Argument that is invalid cannot be null/empty");
+		}
+		
 		this.argument = argument;
 	}
 
