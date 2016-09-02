@@ -29,11 +29,11 @@ import com.sangupta.outline.OutlineMetadata;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.exceptions.OutlineInvalidArgumentException;
 
-public class ArgumentParser {
+public class OutlineArgumentParser {
 
-    public static ParseResult parse(String[] args, OutlineMetadata metadata) {
+    public static OutlineParseResult parse(String[] args, OutlineMetadata metadata) {
         StringArrayIterator iterator = new StringArrayIterator(args);
-        ParseResult result = new ParseResult();
+        OutlineParseResult result = new OutlineParseResult();
         
         // first let's read the global options
         readGlobalOptions(result, iterator, metadata);
@@ -56,7 +56,7 @@ public class ArgumentParser {
      * @param result
      * @param iterator
      */
-    private static void readCommandArguments(ParseResult result, StringArrayIterator iterator) {
+    private static void readCommandArguments(OutlineParseResult result, StringArrayIterator iterator) {
         while(iterator.hasNext()) {
             result.arguments.add(iterator.next());
         }
@@ -69,7 +69,7 @@ public class ArgumentParser {
      * @param iterator
      * @param metadata
      */
-    private static void readCommandNameAndOptions(ParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
+    private static void readCommandNameAndOptions(OutlineParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
         if(!iterator.hasNext()) {
             return;
         }
@@ -141,7 +141,7 @@ public class ArgumentParser {
      * @param iterator
      * @param metadata
      */
-    private static void readGroupAndGroupOptions(ParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
+    private static void readGroupAndGroupOptions(OutlineParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
         if(!iterator.hasNext()) {
             return;
         }
@@ -179,7 +179,7 @@ public class ArgumentParser {
      * @param iterator
      * @param metadata
      */
-    private static void readGlobalOptions(ParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
+    private static void readGlobalOptions(OutlineParseResult result, StringArrayIterator iterator, OutlineMetadata metadata) {
         if(metadata.globalOptions.isEmpty()) {
             return;
         }

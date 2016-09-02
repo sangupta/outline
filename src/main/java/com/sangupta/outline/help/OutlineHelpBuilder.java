@@ -35,7 +35,7 @@ import com.sangupta.outline.annotations.Argument;
 import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.annotations.Option;
-import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.parser.OutlineParseResult;
 import com.sangupta.outline.util.OutlineUtil;
 
 public class OutlineHelpBuilder {
@@ -49,7 +49,7 @@ public class OutlineHelpBuilder {
     /**
      * The result of parsing the arguments
      */
-    protected final ParseResult result;
+    protected final OutlineParseResult result;
 
     /**
      * Construct an instance of {@link OutlineHelpBuilder}.
@@ -57,7 +57,7 @@ public class OutlineHelpBuilder {
      * @param meta
      * @param result
      */
-    public OutlineHelpBuilder(OutlineMetadata meta, ParseResult result) {
+    public OutlineHelpBuilder(OutlineMetadata meta, OutlineParseResult result) {
     	this.meta = meta;
     	this.result = result;
 	}

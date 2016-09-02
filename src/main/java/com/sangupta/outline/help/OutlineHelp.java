@@ -25,7 +25,7 @@ import java.io.PrintStream;
 
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.OutlineMetadata;
-import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.parser.OutlineParseResult;
 
 /**
  * Represents HELP for the Outline based commands.
@@ -44,7 +44,7 @@ public class OutlineHelp {
     /**
      * The result of parsing the arguments
      */
-    protected final ParseResult result;
+    protected final OutlineParseResult result;
     
 	/**
 	 * Convenience constructor.
@@ -52,7 +52,7 @@ public class OutlineHelp {
 	 * @param metadata
 	 * @param result
 	 */
-    public OutlineHelp(OutlineMetadata metadata, ParseResult result) {
+    public OutlineHelp(OutlineMetadata metadata, OutlineParseResult result) {
         this.meta = metadata;
         this.result = result;
     }
@@ -117,7 +117,7 @@ public class OutlineHelp {
 	/**
 	 * @return the result
 	 */
-	public ParseResult getResult() {
+	public OutlineParseResult getResult() {
 		return result;
 	}
     

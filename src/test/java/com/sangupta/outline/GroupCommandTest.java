@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import com.sangupta.outline.Outline;
 import com.sangupta.outline.help.OutlineHelp;
-import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.parser.OutlineParseResult;
 
 /**
  * Tests related to where we test only with a group argument.
@@ -26,7 +26,7 @@ public class GroupCommandTest {
 	    Assert.assertTrue(instance instanceof OutlineHelp);
 	    
 	    OutlineHelp help = (OutlineHelp) instance;
-	    ParseResult result = help.getResult();
+	    OutlineParseResult result = help.getResult();
 	    Assert.assertNotNull(result);
 	    
 	    Assert.assertEquals(null, result.command);
@@ -44,7 +44,7 @@ public class GroupCommandTest {
 	    Assert.assertTrue(instance instanceof OutlineHelp);
 	    
 	    OutlineHelp help = (OutlineHelp) instance;
-	    ParseResult result = help.getResult();
+	    OutlineParseResult result = help.getResult();
 	    Assert.assertNotNull(result);
 	    
 	    Assert.assertEquals("sangupta", result.command);
@@ -62,7 +62,7 @@ public class GroupCommandTest {
 	    Assert.assertTrue(instance instanceof OutlineHelp);
 	    
 	    OutlineHelp help = (OutlineHelp) instance;
-	    ParseResult result = help.getResult();
+	    OutlineParseResult result = help.getResult();
 	    Assert.assertNotNull(result);
 	    
 	    Assert.assertEquals("sangupta", result.command);
@@ -80,7 +80,7 @@ public class GroupCommandTest {
 	    Assert.assertTrue(instance instanceof OutlineHelp);
 	    
 	    OutlineHelp help = (OutlineHelp) instance;
-	    ParseResult result = help.getResult();
+	    OutlineParseResult result = help.getResult();
 	    Assert.assertNotNull(result);
 	    
 	    Assert.assertEquals("radd", result.command);

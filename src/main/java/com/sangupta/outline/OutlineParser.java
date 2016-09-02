@@ -33,8 +33,8 @@ import com.sangupta.jerry.util.ReflectionUtils;
 import com.sangupta.outline.annotations.Command;
 import com.sangupta.outline.exceptions.OutlineRequiredOptionMissingException;
 import com.sangupta.outline.help.OutlineHelp;
-import com.sangupta.outline.parser.ArgumentParser;
-import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.parser.OutlineArgumentParser;
+import com.sangupta.outline.parser.OutlineParseResult;
 
 /**
  * Parse the {@link Outline} instance along with the provided {@link String} array
@@ -79,7 +79,7 @@ public class OutlineParser {
         }
         
         // start reading the options and making sure that we know where the command break-point is
-        ParseResult result = ArgumentParser.parse(args, metadata);
+        OutlineParseResult result = OutlineArgumentParser.parse(args, metadata);
         
         if(!result.helpRequested && result.command == null) {
             throw new RuntimeException("command not specified");

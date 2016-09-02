@@ -26,7 +26,7 @@ import java.util.List;
 
 import com.sangupta.jerry.ds.SimpleMultiMap;
 
-public class ParseResult {
+public class OutlineParseResult {
     
     public String group;
     

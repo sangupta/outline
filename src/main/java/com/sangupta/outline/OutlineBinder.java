@@ -38,7 +38,7 @@ import com.sangupta.outline.annotations.Arguments;
 import com.sangupta.outline.annotations.Option;
 import com.sangupta.outline.annotations.OptionType;
 import com.sangupta.outline.exceptions.OutlineRequiredOptionMissingException;
-import com.sangupta.outline.parser.ParseResult;
+import com.sangupta.outline.parser.OutlineParseResult;
 import com.sangupta.outline.util.OutlineUtil;
 
 /**
@@ -65,7 +65,7 @@ class OutlineBinder {
      * @param instance
      * @param result
      */
-    public static void bindInstanceToProperties(Class<?> clazz, Object instance, ParseResult result) {
+    public static void bindInstanceToProperties(Class<?> clazz, Object instance, OutlineParseResult result) {
         List<Field> fields = OutlineUtil.getAllFields(clazz);
         bindAllOptions(fields, instance, result);
         
@@ -83,7 +83,7 @@ class OutlineBinder {
      * @param result
      * @param startOrder
      */
-    private static void bindRemainingArguments(List<Field> fields, Object instance, ParseResult result, int startOrder) {
+    private static void bindRemainingArguments(List<Field> fields, Object instance, OutlineParseResult result, int startOrder) {
         List<String> remaining;
         if(startOrder > 0) {
             remaining = result.arguments.subList(startOrder, result.arguments.size());
@@ -102,7 +102,7 @@ class OutlineBinder {
         }
     }
 
-    private static int bindAllArgumentsWithOrder(List<Field> fields, Object instance, ParseResult result) {
+    private static int bindAllArgumentsWithOrder(List<Field> fields, Object instance, OutlineParseResult result) {
         int maxOrderRead = -1;
         
         for(Field field : fields) {
@@ -128,7 +128,7 @@ class OutlineBinder {
         return maxOrderRead + 1;
     }
 
-    private static void bindAllOptions(List<Field> fields, Object instance, ParseResult result) {
+    private static void bindAllOptions(List<Field> fields, Object instance, OutlineParseResult result) {
         for(Field field : fields) {
             // check for @Option annotation
             Option option = field.getAnnotation(Option.class);
