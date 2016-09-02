@@ -1,6 +1,6 @@
 package com.sangupta.outline.exceptions;
 
-public class OutlineRequiredOptionMissingException extends RuntimeException {
+public class OutlineRequiredOptionMissingException extends OutlineException {
 
 	/**
 	 * Generated via Eclipse

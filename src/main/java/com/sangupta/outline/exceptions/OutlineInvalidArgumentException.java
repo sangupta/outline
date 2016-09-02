@@ -1,6 +1,6 @@
 package com.sangupta.outline.exceptions;
 
-public class OutlineInvalidArgumentException extends RuntimeException {
+public class OutlineInvalidArgumentException extends OutlineException {
 
 	/**
 	 * Generated via Eclipse

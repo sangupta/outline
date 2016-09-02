@@ -1,6 +1,6 @@
 package com.sangupta.outline.exceptions;
 
-public class OutlineInvalidConfigurationException extends RuntimeException {
+public class OutlineInvalidConfigurationException extends OutlineException {
 
 	/**
 	 * Generated via Eclipse
