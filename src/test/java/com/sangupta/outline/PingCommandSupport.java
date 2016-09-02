@@ -1,5 +1,7 @@
 package com.sangupta.outline;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import com.sangupta.outline.annotations.Argument;
@@ -14,6 +16,9 @@ public class PingCommandSupport {
 	
 	@Inject
 	public OutlineHelp helpCommand;
+	
+	@Inject
+	public File helpFile;
 	
 	@Option(name = "--global", description = "This is some description for the global flag", type = OptionType.GLOBAL, arity = 0)
 	protected String g;
