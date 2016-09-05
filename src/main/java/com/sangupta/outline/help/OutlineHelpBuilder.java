@@ -180,7 +180,13 @@ public class OutlineHelpBuilder {
 				writer.setIndentLevel(1);
 				writer.writeLine("<" + nonEmpty(arg.title(), "arg" + count++) + ">");
 				writer.setIndentLevel(2);
-				writer.writeLine(arg.description());
+				writer.write(arg.description());
+				
+				if(!arg.description().endsWith(".")) {
+					writer.write('.');
+				}
+				writer.newLine();
+				
 				if(arg.required()) {
 					writer.writeLine("Required.");
 				}
@@ -192,7 +198,13 @@ public class OutlineHelpBuilder {
 				writer.setIndentLevel(1);
 				writer.writeLine("<" + nonEmpty(args.title(), "arguments") + ">");
 				writer.setIndentLevel(2);
-				writer.writeLine(args.description());
+				writer.write(args.description());
+				
+				if(!args.description().endsWith(".")) {
+					writer.write('.');
+				}
+				
+				writer.newLine();
 			}
 		}
 		
@@ -241,6 +253,7 @@ public class OutlineHelpBuilder {
         
         // lastly we add the separator too
         if(this.hasArguments) {
+        	writer.newLine();
 	        writer.setIndentLevel(1);
 	        writer.writeLine("--");
 	        writer.setIndentLevel(2);
