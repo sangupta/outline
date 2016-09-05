@@ -50,7 +50,12 @@ public class OutlineHelpBuilder {
      * The result of parsing the arguments
      */
     protected final OutlineParseResult result;
-
+    
+    /**
+     * Whether this help will have help for command arguments
+     */
+    protected final boolean hasArguments;
+    
     /**
      * Construct an instance of {@link OutlineHelpBuilder}.
      * 
@@ -60,6 +65,7 @@ public class OutlineHelpBuilder {
     public OutlineHelpBuilder(OutlineMetadata meta, OutlineParseResult result) {
     	this.meta = meta;
     	this.result = result;
+    	this.hasArguments = AssertUtils.isNotEmpty(this.meta.commandArguments.getValues(result.command));
 	}
 
 	/**
@@ -165,6 +171,8 @@ public class OutlineHelpBuilder {
     	
 		int count = 1;
 		for(Object obj : arguments) {
+			writer.newLine();
+			
 			// iterate over them
 			if(obj instanceof Argument) {
 				Argument arg = (Argument) obj;
@@ -230,6 +238,15 @@ public class OutlineHelpBuilder {
         if(AssertUtils.isNotEmpty(this.result.command)) {
     		buildOptionsSectionForData(writer, this.meta.commandOptions.values().iterator().next());
         }
+        
+        // lastly we add the separator too
+        if(this.hasArguments) {
+	        writer.setIndentLevel(1);
+	        writer.writeLine("--");
+	        writer.setIndentLevel(2);
+	        writer.write("This option can be used to separate command-line options from the list of argument, (useful when arguments might be mistaken for command-line options).");
+	        writer.setIndentLevel(0);
+        }
     }
 
     /**
@@ -247,6 +264,9 @@ public class OutlineHelpBuilder {
         
         Set<Option> options = new HashSet<>(optionsCollection);
         for(Option option : options) {
+        	writer.newLine();
+        	
+        	// check for hidden
         	if(option.hidden()) {
         		// skip hidden options
         		continue;
@@ -375,6 +395,10 @@ public class OutlineHelpBuilder {
 			return;
 		}
 		
+		// output the separator
+		writer.write("[--]");
+		
+		// output the actual arguments
 		int count = 1;
 		for(Object obj : arguments) {
 			// iterate over them
@@ -382,18 +406,14 @@ public class OutlineHelpBuilder {
 				Argument arg = (Argument) obj;
 
 				writer.write(' ');
-				writer.write('<');
-				writer.write(nonEmpty(arg.title(), "arg" + count++));
-				writer.write('>');
+				writer.writeNonBreaking("<", nonEmpty(arg.title(), "arg" + count++), ">");
 			}
 			
 			if(obj instanceof Arguments) {
 				Arguments args = (Arguments) obj;
 
 				writer.write(' ');
-				writer.write('<');
-				writer.write(nonEmpty(args.title(), "arguments"));
-				writer.write('>');
+				writer.writeNonBreaking("<", nonEmpty(args.title(), "arguments"), ">");
 			}
 		}
 	}
@@ -433,7 +453,7 @@ public class OutlineHelpBuilder {
 				if(option.arity() == 1) {
 					writer.write(" <option-arg>");
 				} else {
-					writer.write(" <option-arg" + (index + 1) + ">");
+					writer.writeNonBreaking(" <option-arg", String.valueOf(index + 1), ">");
 				}
 			}
 			
