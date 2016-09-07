@@ -38,7 +38,7 @@ public class OutlineSingleCommandCreationCaseTest {
 		
 		// adding null commands
 		try {
-			outline = new Outline(PingCommandSupport.class).withCommands(null);
+			outline = new Outline(PingCommandSupport.class).withCommands((Class<?> []) null);
 			
 			Assert.assertTrue(false);
 		} catch(IllegalStateException e) {
@@ -47,7 +47,7 @@ public class OutlineSingleCommandCreationCaseTest {
 		
 		// single command mode without any annotation
 		try {
-			outline = new Outline(PingCommandSupport.class).withCommands(null);
+			outline = new Outline(PingCommandSupport.class).withCommands((Class<?> []) null);
 			
 			Assert.assertTrue(false);
 		} catch(IllegalStateException e) {
@@ -56,7 +56,7 @@ public class OutlineSingleCommandCreationCaseTest {
 		
 		// single command and adding more commands
 		try {
-			outline = new Outline(PingCommandSupport.class).withCommands(null);
+			outline = new Outline(PingCommandSupport.class).withCommands((Class<?> []) null);
 			
 			Assert.assertTrue(false);
 		} catch(IllegalStateException e) {

@@ -42,7 +42,7 @@ public class OutlineArgumentParser {
         // read group and group options if applicable
         readGroupAndGroupOptions(result, iterator, metadata);
         
-        // read command name and command optiosn if applicable
+        // read command name and command options if applicable
         readCommandNameAndOptions(result, iterator, metadata);
         
         // whatever is remaining is now the command arguments
@@ -124,6 +124,11 @@ public class OutlineArgumentParser {
         
         while(iterator.hasNext()) {
             String token = iterator.peek();
+            
+            if(token.equals("--")) {
+            	// we have hit the separator
+            	break;
+            }
             
             if(!options.containsKey(token)) {
                 break;
