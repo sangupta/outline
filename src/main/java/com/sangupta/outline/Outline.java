@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sangupta.jerry.util.AssertUtils;
 import com.sangupta.outline.cmdfactory.OutlineCommandFactory;
 import com.sangupta.outline.cmdfactory.OutlineDefaultCommandFactory;
 
@@ -56,7 +57,7 @@ public class Outline extends OutlineBase {
     }
     
     /**
-     * Register global converters that help us throughout.
+     * Register global converters that help us throughout. 
      * 
      */
     static {
@@ -144,26 +145,77 @@ public class Outline extends OutlineBase {
         return this;
     }
 
+    /**
+     * Set the help keyword that shoudl be used.
+     * 
+     * @param word
+     * @return
+     */
     public Outline withHelpKeyword(String word) {
         this.helpKeyword = word;
         return this;
     }
     
+    /**
+     * Use the given command factory to create instances of command rather than the
+     * default one.
+     * 
+     * @param commandFactory
+     * @return
+     */
     public Outline withCommandFactory(OutlineCommandFactory commandFactory) {
         this.commandFactory = commandFactory;
         return this;
     }
  
+    /**
+	 * Create a new group name and return the group definition so that more
+	 * commands can be added to the group. If the group name has been used before
+	 * the same previous group definition is returned.
+	 * 
+	 * @param name
+	 *            the group name to use
+	 * 
+	 * @return the group definition
+	 * 
+	 * @throws IllegalStateException
+	 *             if we are in a single command mode
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the group name is <code>empty</code> or <code>null</code>
+	 */
     public OutlineBase withGroup(String name) {
         if(this.singleCommandMode) {
             throw new IllegalStateException("Cannot create groups in single-command mode.");
         }
         
+        if(AssertUtils.isEmpty(name)) {
+        	throw new IllegalArgumentException("Group name cannot be null/empty");
+        }
+        
+        // do we already have such a group
+        if(this.groups.containsKey(name)) {
+        	return this.groups.get(name);
+        }
+        
+        // create a new group
         OutlineBase abstractOutline = new OutlineBase(name) { };
         this.groups.put(name, abstractOutline);
         return abstractOutline;
     }
 
+    /**
+	 * Get the name of the group to which the given command class belongs. Will
+	 * return <code>null</code> if the command does not belong to any group.
+	 * 
+	 * @param commandClass
+	 *            the command class to check
+	 * 
+	 * @return the group name if found, <code>null</code> otherwise
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the command class provided is <code>null</code>
+	 */
     public String getCommandGroup(Class<?> commandClass) {
         if(this.groups.isEmpty()) {
             return null;
@@ -180,11 +232,27 @@ public class Outline extends OutlineBase {
         return null;
     }
 
+    /**
+	 * Set whether help should be displayed by default when incorrect arguments
+	 * are presented during application invocation.
+	 * 
+	 * @param helpOnIncorrectArguments
+	 *            <code>true</code> if help should be shown, <code>false</code>
+	 *            otherwise
+	 * 
+	 * @return the same {@link Outline} instance
+	 */
 	public Outline withHelpOnIncorrectArguments(boolean helpOnIncorrectArguments) {
 		this.helpOnIncorrectArguments = helpOnIncorrectArguments;
 		return this;
 	}
 
+	/**
+	 * Return whether we are in a single-command mode or not.
+	 * 
+	 * @return <code>true</code> if {@link Outline} is operating in a
+	 *         single-command mode, <code>false</code> otherwise
+	 */
 	public boolean isSingleCommandMode() {
 		return this.singleCommandMode;
 	}
