@@ -97,6 +97,19 @@ public abstract class OutlineBase {
         return this;
     }
     
+    public OutlineBase withCommand(Class<?> command) {
+    	if(this.singleCommandMode) {
+    		throw new IllegalStateException("Cannot add commands in single-command mode.");
+    	}
+    	
+    	if(command == null) {
+    		return this;
+    	}
+    	
+    	this.commands.add(command);
+    	return this;
+    }
+    
     public OutlineBase withCommands(Class<?>... commands) {
         if(this.singleCommandMode) {
             throw new IllegalStateException("Cannot add commands in single-command mode.");

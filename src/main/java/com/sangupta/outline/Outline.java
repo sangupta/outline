@@ -128,6 +128,13 @@ public class Outline extends OutlineBase {
     }
     
     @Override
+    public Outline withCommand(Class<?> command) {
+    	super.withCommand(command);
+    	
+    	return this;
+    }
+    
+    @Override
     public Outline withCommands(Class<?>... commands) {
         if(this.singleCommandMode) {
             throw new IllegalStateException("Cannot add more commands in single-command mode.");
@@ -177,5 +184,9 @@ public class Outline extends OutlineBase {
 		this.helpOnIncorrectArguments = helpOnIncorrectArguments;
 		return this;
 	}
-    
+
+	public boolean isSingleCommandMode() {
+		return this.singleCommandMode;
+	}
+	
 }
