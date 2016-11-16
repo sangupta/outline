@@ -22,6 +22,7 @@
 package com.sangupta.outline;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import com.sangupta.outline.exceptions.OutlineRequiredOptionMissingException;
 import com.sangupta.outline.help.OutlineHelp;
 import com.sangupta.outline.parser.OutlineArgumentParser;
 import com.sangupta.outline.parser.OutlineParseResult;
+import com.sangupta.outline.util.OutlineUtil;
 
 /**
  * Parse the {@link Outline} instance along with the provided {@link String} array
@@ -139,7 +141,7 @@ public class OutlineParser {
      * @param helpCommand the value to inject
      */
     private static void injectHelpOptionsIfAvailable(Object instance, OutlineHelp helpCommand) {
-		Field[] fields = instance.getClass().getFields();
+		List<Field> fields = OutlineUtil.getAllFields(instance.getClass());
 		if(AssertUtils.isEmpty(fields)) {
 			return;
 		}

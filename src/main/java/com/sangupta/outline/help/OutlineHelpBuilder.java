@@ -247,7 +247,7 @@ public class OutlineHelpBuilder {
         }
         
         // add all command options
-        if(AssertUtils.isNotEmpty(this.result.command)) {
+        if(this.meta.singleCommandMode || AssertUtils.isNotEmpty(command)) {
     		buildOptionsSectionForData(writer, this.meta.commandOptions.values().iterator().next());
         }
         

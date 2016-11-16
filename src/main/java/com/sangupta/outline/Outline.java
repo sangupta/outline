@@ -39,10 +39,21 @@ import com.sangupta.outline.cmdfactory.OutlineDefaultCommandFactory;
  */
 public class Outline extends OutlineBase {
     
+	/**
+	 * The help keyword to use - the default value is <code>help</code>
+	 */
     String helpKeyword = "help";
     
+    /**
+     * The command factory to use to create instances of commands. The default
+     * value is to use {@link OutlineDefaultCommandFactory} implementation.
+     * 
+     */
     OutlineCommandFactory commandFactory = new OutlineDefaultCommandFactory();
     
+    /**
+     * Holds all groups and their definitions
+     */
     final Map<String, OutlineBase> groups = new HashMap<>();
     
     /**
