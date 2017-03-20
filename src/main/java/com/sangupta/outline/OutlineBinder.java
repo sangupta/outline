@@ -96,6 +96,10 @@ class OutlineBinder {
             if(arguments == null) {
                 continue;
             }
+            
+            if(arguments.required()) {
+            	throw new OutlineRequiredOptionMissingException("Missing mandatory 'arguments' at the last.");
+            }
 
             bindValueToField(field, instance, remaining);
             return;
@@ -114,7 +118,7 @@ class OutlineBinder {
             int order = argument.order();
             if(order >= result.arguments.size()) {
                 if(argument.required()) {
-                    throw new RuntimeException("missing mandatory argument param");
+                    throw new OutlineRequiredOptionMissingException("missing mandatory argument param");
                 }
                 
                 continue;
@@ -169,7 +173,6 @@ class OutlineBinder {
             List<?> values = (List<?>) value;
             
             if(values.isEmpty()) {
-                ReflectionUtils.bindValueQuiet(field, instance, null);
                 return;
             }
             
